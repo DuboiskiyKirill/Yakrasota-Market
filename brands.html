@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Выберите бренд</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .brand-card {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .brand-card:hover {
+      transform: scale(1.03);
+    }
+    .brand-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+    .brand-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>💇‍♀️ Выберите бренд</h2>
+
+  <div class="brand-card" onclick="openBrand('Tigi')">
+    <img src="images/tigi_logo.jpg" alt="Tigi">
+    <div class="brand-name">Tigi</div>
+  </div>
+
+  <div class="brand-card" onclick="openBrand('Matrix')">
+    <img src="images/matrix_logo.jpg" alt="Matrix">
+    <div class="brand-name">Matrix</div>
+  </div>
+
+  <div class="brand-card" onclick="openBrand('Londa')">
+    <img src="images/londa_logo.jpg" alt="Londa">
+    <div class="brand-name">Londa</div>
+  </div>
+
+  <div class="brand-card" onclick="openBrand('Wella')">
+    <img src="images/wella_logo.jpg" alt="Wella">
+    <div class="brand-name">Wella</div>
+  </div>
+
+  <script>
+    function openBrand(brand) {
+      // позже можно сделать products.html?brand=brand
+      window.location.href = 'products.html?brand=${brand}';
+    }
+  </script>
+</body>
+</html>

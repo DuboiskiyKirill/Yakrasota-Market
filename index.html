@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Якрасота – вход</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #8e2de2, #4a00e0);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: rgba(255,255,255,0.1);
+      padding: 25px;
+      border-radius: 15px;
+      width: 300px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">💄 Якрасота</div>
+    <input type="email" placeholder="E-mail">
+    <input type="tel" placeholder="Телефон">
+    <input type="password" placeholder="Пароль">
+    <button class="btn" onclick="login()">Войти</button>
+  </div>
+
+  <script>
+    function login() {
+      // Позже можно добавить проверку
+      window.location.href = "brands.html";
+    }
+  </script>
+</body>
+</html>
+</html>
