@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог товаров</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .product {
+      display: flex;
+      align-items: center;
+      background: white;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+    .product img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      margin-right: 10px;
+    }
+    .product-info {
+      flex: 1;
+    }
+    .product-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .price {
+      color: #ff4081;
+      font-size: 16px;
+    }
+    .btn {
+      background: #ff4081;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #cart-summary {
+      text-align: center;
+      padding: 10px;
+      margin-top: 15px;
+      background: #fff8e1;
+      border-radius: 10px;
+    }
+    #checkout {
+      display: block;
+      background: green;
+      color: white;
+      font-size: 18px;
+      padding: 10px;
+      text-align: center;
+      margin: 15px auto;
+      max-width: 400px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+  <h2>🛍 Каталог</h2>
+
+  <div id="product-list"></div>
+
+  <div id="cart-summary">🛒 Ваша корзина пуста</div>
+  <button id="checkout">✅ Отправить заказ</button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    let cart = [];
+
+    // Пример товаров (разных брендов)
+    const products = [
+      { name: "TIGI Balm 12", price: 3000, brand: "TIGI", img: "tigi12.jpg" },
+      { name: "TIGI Balm 13", price: 3100, brand: "TIGI", img: "tigi13.jpg" },
+      { name: "Matrix Oil", price: 2500, brand: "Matrix", img: "matrix1.jpg" },
+      { name: "Matrix Shampoo", price: 2700, brand: "Matrix", img: "matrix2.jpg" },
+      { name: "Londa Volume", price: 2200, brand: "Londa", img: "londa1.jpg" },
+      { name: "Wella Repair", price: 2600, brand: "Wella", img: "wella1.jpg" }
+    ];
+
+    // Получаем выбранный бренд из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedBrand = urlParams.get('brand') || "Все бренды";
+
+    document.title = 'Товары ${selectedBrand}';
+    document.querySelector("h2").textContent = '🛍 ${selectedBrand}';
+
+    // Фильтрация по бренду
+    const filteredProducts = products.filter(p => {
+      if (selectedBrand === "Все бренды") return true;
+      return p.brand.toLowerCase() === selectedBrand.toLowerCase();
+    });
+
+    // Рендер товаров
+    function renderProducts() {
+      const list = document.getElementById('product-list');
+      list.innerHTML = "";
+      filteredProducts.forEach(p => {
+        const div = document.createElement('div');
+        div.className = "product";
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.name}">
+          <div class="product-info">
+            <div class="product-title">${p.name}</div>
+            <div class="price">${p.price} ₽</div>
+            <button class="btn" onclick="addToCart('${p.name}', ${p.price})">Добавить</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // Обновляем отображение корзины
+    function updateCartSummary() {
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      const summary = document.getElementById("cart-summary");
+      if (cart.length === 0) {
+        summary.textContent = "🛒 Ваша корзина пуста";
+      } else {
+        summary.textContent = '🛒 Товаров: ${cart.length} | 💰 Итого: ${total} ₽';
+      }
+    }
+
+    // Добавляем товар
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      updateCartSummary();
+
+      tg.HapticFeedback.notificationOccurred("success");
+      tg.showPopup({
+        title: "Корзина",
+        message: '${name} добавлен в корзину!',
+        buttons: [{ text: "Ок" }]
+      });
+    }
+
+    // Кнопка отправки заказа
+    document.getElementById("checkout").addEventListener("click", () => {
+      if (cart.length === 0) {
+        tg.showAlert("Корзина пуста!");
+        return;
+      }
+      // Отправляем корзину в бота
+      tg.sendData(JSON.stringify({ brand: selectedBrand, items: cart }));
+      tg.close();
+    });
+
+    renderProducts();
+  </script>
+
+</body>
+</html>

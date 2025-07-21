@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Выбор бренда</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .brand-card {
+      background: white;
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 300px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .brand-card:hover {
+      transform: scale(1.03);
+    }
+    .brand-logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    .brand-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+  <h2>✨ Выберите бренд</h2>
+
+  <div class="brand-card" onclick="openBrand('TIGI')">
+    <img src="https://via.placeholder.com/100?text=TIGI" class="brand-logo" alt="TIGI">
+    <div class="brand-name">TIGI</div>
+  </div>
+
+  <div class="brand-card" onclick="openBrand('Matrix')">
+    <img src="https://via.placeholder.com/100?text=Matrix" class="brand-logo" alt="Matrix">
+    <div class="brand-name">Matrix</div>
+  </div>
+
+  <div class="brand-card" onclick="openBrand('Londa')">
+    <img src="https://via.placeholder.com/100?text=Londa" class="brand-logo" alt="Londa">
+    <div class="brand-name">Londa</div>
+  </div>
+
+  <div class="brand-card" onclick="openBrand('Wella')">
+    <img src="https://via.placeholder.com/100?text=Wella" class="brand-logo" alt="Wella">
+    <div class="brand-name">Wella</div>
+  </div>
+
+  <script>
+    function openBrand(brand) {
+      // Переход на страницу с товарами выбранного бренда
+      window.location.href = 'index.html?brand=${brand}';
+    }
+  </script>
+
+</body>
+</html>
