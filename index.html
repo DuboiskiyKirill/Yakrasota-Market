@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Магазин косметики</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>🛍 Магазин косметики</header>
+  <div class="container" id="product-list"></div>
+  <button class="btn" id="checkout">✅ Отправить заказ</button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const products = [
+      { name: "TIGI Balm 11", price: 2900, img: "tigi11.jpg" },
+      { name: "TIGI Balm 12", price: 3000, img: "tigi12.jpg" },
+      { name: "TIGI Balm 13", price: 3100, img: "tigi13.jpg" },
+      { name: "TIGI Balm 14", price: 3200, img: "tigi14.jpg" },
+      { name: "TIGI Balm 15", price: 3300, img: "tigi15.jpg" }
+    ];
+
+    let cart = [];
+
+    function renderProducts() {
+      const list = document.getElementById('product-list');
+      list.innerHTML = "";
+      products.forEach(p => {
+        const div = document.createElement('div');
+        div.className = "product";
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.name}">
+          <div class="product-info">
+            <div class="product-title">${p.name}</div>
+            <div class="price">${p.price} ₽</div>
+            <button class="btn" onclick="addToCart('${p.name}', ${p.price})">Добавить</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      tg.HapticFeedback.notificationOccurred("success");
+      tg.showPopup({ title: "Корзина", message: `${name} добавлен в корзину!`, buttons: [{ text: "Ок" }] });
+    }
+
+    document.getElementById('checkout').addEventListener('click', () => {
+      if (cart.length === 0) {
+        tg.showAlert("Корзина пуста!");
+        return;
+      }
+      tg.sendData(JSON.stringify(cart));
+      tg.close();
+    });
+
+    renderProducts();
+  </script>
+</body>
+</html>
