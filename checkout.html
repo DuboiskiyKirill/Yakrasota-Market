@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Итог заказа | Якрасота</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    header {
+      background: linear-gradient(135deg, #7b2ff7, #f107a3);
+      color: #fff; padding: 15px; text-align: center; position: relative;
+    }
+    .back-btn {
+      position: absolute; left: 10px; top: 12px;
+      background: rgba(255,255,255,0.3); color: #fff;
+      padding: 6px 12px; border-radius: 20px; font-size: 14px; text-decoration: none;
+    }
+    .order-list { padding: 10px; }
+    .order-item {
+      background: #fff; margin-bottom: 10px; padding: 10px;
+      border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .order-name { font-weight: bold; }
+    .order-summary {
+      background: #fff; padding: 15px; margin: 10px;
+      border-radius: 8px; text-align: center;
+    }
+    .confirm-btn {
+      display: block; width: calc(100% - 20px);
+      margin: 10px; padding: 12px; background: #28a745; color: #fff;
+      border: none; font-size: 16px; border-radius: 8px; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="back-btn" href="products.html">⬅ Назад</a>
+    Итог заказа
+  </header>
+
+  <div class="order-list" id="orderList"></div>
+
+  <div class="order-summary" id="orderSummary"></div>
+
+  <button class="confirm-btn" onclick="confirmOrder()">✅ Подтвердить заказ</button>
+
+  <script>
+    const order = JSON.parse(localStorage.getItem('yakrasota_order')) || [];
+
+    function renderOrder() {
+      const list = document.getElementById('orderList');
+      let total = 0;
+      list.innerHTML = '';
+
+      order.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'order-item';
+        const subtotal = item.qty * item.price;
+        total += subtotal;
+        div.innerHTML = `
+          <div class="order-name">${item.name}</div>
+          <div>Количество: ${item.qty}</div>
+          <div>Цена за шт: ${item.price} ₽</div>
+          <div>Итого: <b>${subtotal} ₽</b></div>
+        `;
+        list.appendChild(div);
+      });
+
+      document.getElementById('orderSummary').innerHTML = <b>Общая сумма: ${total} ₽</b>;
+    }
+
+    function confirmOrder() {
+      // Здесь можно отправить заказ в Telegram WebApp
+      alert('✅ Заказ отправлен!');
+      localStorage.removeItem('yakrasota_order');
+      window.location.href = 'brands.html';
+    }
+
+    renderOrder();
+  </script>
+
+</body>
+</html>

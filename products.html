@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог | Якрасота</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; }
+
+    header {
+      background: linear-gradient(135deg, #7b2ff7, #f107a3);
+      color: #fff; padding: 15px; text-align: center; position: relative;
+    }
+    .back-btn {
+      position: absolute; left: 10px; top: 12px;
+      background: rgba(255,255,255,0.3); color: #fff;
+      padding: 6px 12px; border-radius: 20px; font-size: 14px; text-decoration: none;
+    }
+
+    .filters {
+      padding: 10px; background: #fff;
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; border-bottom: 1px solid #ddd;
+    }
+    .filters input[type="text"], .filters select {
+      padding: 8px; border: 1px solid #ccc; border-radius: 8px;
+    }
+
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px; padding: 10px;
+    }
+
+    .product-card {
+      background: #fff; border-radius: 10px; padding: 10px;
+      text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .product-card img {
+      width: 100%; aspect-ratio: 4/5; object-fit: cover;
+      border-radius: 8px; background: #f9f9f9;
+    }
+    .product-name { font-size: 14px; margin: 8px 0 4px; }
+    .product-volume { font-size: 12px; color: #777; }
+    .product-price { font-size: 16px; font-weight: bold; margin: 6px 0; }
+    .product-stock { font-size: 12px; margin: 4px 0; }
+
+    .qty-controls {
+      display: flex; justify-content: center; align-items: center; gap: 10px;
+    }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 50%; border: none;
+      background: #f107a3; color: #fff; font-size: 18px; cursor: pointer;
+    }
+    .qty-btn.disabled {
+      background: #ccc; cursor: not-allowed;
+    }
+
+    .cart-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; padding: 10px;
+      border-top: 1px solid #ddd; display: flex;
+      justify-content: space-between; align-items: center;
+    }
+    .checkout-btn {
+      background: #28a745; color: #fff; border: none;
+      padding: 10px 15px; border-radius: 8px; font-size: 14px; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="back-btn" href="categories.html">⬅ Назад</a>
+    Каталог товаров
+  </header>
+
+  <!-- Поиск и фильтр -->
+  <div class="filters">
+    <input type="text" id="searchInput" placeholder="Поиск товара...">
+    <select id="categoryFilter">
+      <option value="all">Все категории</option>
+      <option value="shampoo">Шампуни</option>
+      <option value="balm">Бальзамы</option>
+      <option value="leavein">Несмываемый уход</option>
+      <option value="color">Краски для волос</option>
+    </select>
+  </div>
+
+  <!-- Сетка товаров -->
+  <div class="products-grid" id="productsGrid"></div>
+
+  <!-- Корзина -->
+  <div class="cart-bar">
+    <div>🛒 <span id="cartCount">0</span> шт | 💰 <span id="cartTotal">0</span> ₽</div>
+    <button class="checkout-btn" onclick="goToCheckout()">✅ Оформить заказ</button>
+  </div>
+
+  <script>
+    // === Базовый список товаров ===
+    let products = [
+      { name: "TIGI Shampoo", volume: "250 мл", price: 1500, stock: 0, img: "images/tigi1.jpg", category: "shampoo" },
+      { name: "TIGI Balm", volume: "200 мл", price: 1300, stock: 0, img: "images/tigi2.jpg", category: "balm" },
+      { name: "Matrix Oil", volume: "100 мл", price: 2100, stock: 0, img: "images/matrix1.jpg", category: "leavein" },
+      { name: "Matrix Color", volume: "90 мл", price: 800, stock: 0, img: "images/matrix_color.jpg", category: "color" },
+      { name: "Londa Volume", volume: "250 мл", price: 1200, stock: 0, img: "images/londa1.jpg", category: "shampoo" },
+      { name: "Wella Repair Balm", volume: "250 мл", price: 1800, stock: 0, img: "images/wella1.jpg", category: "balm" }
+    ];
+
+    let cart = {};
+
+    const grid = document.getElementById('productsGrid');
+    const searchInput = document.
+getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    // ✅ Текст для остатка
+    function stockText(stock) {
+      if (stock === 0) return <span style="color:red">❌ Нет в наличии</span>;
+      if (stock < 5) return <span style="color:orange">⚠ Осталось мало: ${stock} шт.</span>;
+      return '✅ В наличии:${stock} шт.';
+    }
+
+    // ✅ Отрисовка товаров
+    function renderProducts() {
+      grid.innerHTML = '';
+      const searchValue = searchInput.value.toLowerCase();
+      const selectedCategory = categoryFilter.value;
+
+      products
+        .filter(p => {
+          const matchSearch = p.name.toLowerCase().includes(searchValue);
+          const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
+          return matchSearch && matchCat;
+        })
+        .forEach(p => {
+          const disabled = p.stock === 0 ? 'disabled' : '';
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <img src="${p.img}" alt="${p.name}">
+            <div class="product-name">${p.name}</div>
+            <div class="product-volume">${p.volume}</div>
+            <div class="product-price">${p.price} ₽</div>
+            <div class="product-stock">${stockText(p.stock)}</div>
+            <div class="qty-controls">
+              <button class="qty-btn ${disabled}" onclick="updateQty('${p.name}', -1)" ${disabled}>−</button>
+              <span id="qty-${p.name.replace(/\s+/g,'')}">${cart[p.name]?.qty || 0}</span>
+              <button class="qty-btn ${disabled}" onclick="updateQty('${p.name}', 1)" ${disabled}>+</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+    }
+
+    // ✅ Обновляем количество
+    function updateQty(name, change) {
+      const prod = products.find(p => p.name === name);
+      if (!prod || prod.stock === 0) return;
+
+      if (!cart[name]) cart[name] = { qty: 0, ...prod };
+      cart[name].qty = Math.max(0, Math.min(prod.stock, cart[name].qty + change));
+      document.getElementById(`qty-${name.replace(/\s+/g,'')}`).textContent = cart[name].qty;
+      updateCartSummary();
+    }
+
+    // ✅ Корзина
+    function updateCartSummary() {
+      let totalItems = 0;
+      let totalPrice = 0;
+      for (let key in cart) {
+        totalItems += cart[key].qty;
+        totalPrice += cart[key].qty * cart[key].price;
+      }
+      document.getElementById('cartCount').textContent = totalItems;
+      document.getElementById('cartTotal').textContent = totalPrice;
+    }
+
+    // ✅ Переход на checkout.html
+    function goToCheckout() {
+      const order = [];
+      for (let key in cart) {
+        if (cart[key].qty > 0) order.push(cart[key]);
+      }
+      if (order.length === 0) {
+        alert("Корзина пуста!");
+        return;
+      }
+      localStorage.setItem('yakrasota_order', JSON.stringify(order));
+      window.location.href = 'checkout.html';
+    }
+
+    searchInput.addEventListener('input', renderProducts);
+    categoryFilter.addEventListener('change', renderProducts);
+
+    // ✅ Загружаем актуальные остатки и цены из stock.json
+    fetch('stock.json')
+      .then(r => r.json())
+      .then(data => {
+        data.forEach(update => {
+          const prod = products.find(p => p.name === update.name);
+          if (prod) {
+            prod.price = update.price;
+            prod.stock = update.stock;
+          }
+        });
+        renderProducts();
+      })
+      .catch(err => {
+        console.warn("Не удалось загрузить stock.json, используем базовые данные");
+        renderProducts();
+      });
+  </script>
+</body>
+</html>
+
