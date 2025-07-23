@@ -1,8 +1,0 @@
-[
-    { "name": "TIGI Shampoo", "price": 1490, "stock": 12 },
-    { "name": "TIGI Balm", "price": 1350, "stock": 0 },
-    { "name": "Matrix Oil", "price": 2100, "stock": 3 },
-    { "name": "Matrix Color", "price": 800, "stock": 7 },
-    { "name": "Londa Volume", "price": 1250, "stock": 2 },
-    { "name": "Wella Repair Balm", "price": 1800, "stock": 0 }
-  ]
