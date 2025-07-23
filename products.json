@@ -1,0 +1,4 @@
+[
+  {"name": "Tigi Shampoo 1", "brand": "Tigi", "category": "Шампуни", "price": 1000, "stock": 5, "image": "images/tigi_shampoo1.jpg"},
+  {"name": "Tigi Color 5/71", "brand": "Tigi", "category": "Краски для волос", "price": 1200, "stock": 10, "image": "images/tigi_color_571.jpg", "shades": ["5/71","7/43","9/65"]}
+]

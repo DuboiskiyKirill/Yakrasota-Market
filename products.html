@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Товары</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #ff4f8b, #8a2be2);
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .search-box {
+      width: 90%;
+      max-width: 400px;
+      margin: 15px auto;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      display: block;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .product-card {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      transition: 0.3s;
+    }
+    .product-card:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    .product-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .product-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .product-price {
+      font-size: 16px;
+      color: #ffeb3b;
+    }
+    .shade-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 10px;
+      margin: 10px auto;
+      max-width: 90%;
+    }
+    .shade {
+      flex: 0 0 auto;
+      background: white;
+      color: #333;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+    .shade:hover {
+      background: #ff69b4;
+      color: white;
+    }
+    .back-btn {
+      margin: 20px auto;
+      padding: 10px 20px;
+      background: white;
+      color: #333;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .shade-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 5px 0;
+  margin-top: 5px;
+  scrollbar-width: thin;
+}
+
+.shade-item {
+  min-width: 50px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.shade-item:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.shade-item.selected {
+  background: #ff4081; /* яркий цвет выделения */
+  color: #fff;
+  font-weight: bold;
+}
+  </style>
+</head>
+<body>
+
+  <h1>✨ Товары</h1>
+
+  <!-- Поиск по названию -->
+  <input type="text" class="search-box" id="searchInput" placeholder="Поиск товара...">
+
+  <!-- Блок оттенков, только для категории краски -->
+  <div id="shades-container" style="display:none;">
+    <h3>Выберите оттенок</h3>
+    <div class="shade-scroll" id="shadeList"></div>
+  </div>
+
+  <!-- Сетка товаров -->
+  <div class="products-grid" id="productGrid"></div>
+
+  <button class="back-btn" onclick="window.history.back()">⬅ Назад</button>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const brand = urlParams.get('brand');
+    const category = urlParams.get('category');
+
+    const productGrid = document.getElementById("productGrid");
+    const searchInput = document.getElementById("searchInput");
+    const shadesContainer = document.getElementById("shades-container");
+    const shadeList = document.getElementById("shadeList");
+
+    // Пример базы товаров (заменим потом на JSON)
+    const products = [
+      { name: "Wella Shampoo Repair", price: 1000, brand: "Wella", category: "Шампуни", image: "img/wella_shampoo1.jpg" },
+      { name: "Wella Color Touch 9/65", price: 1200, brand: "Wella", category: "Краски для волос", image: "img/wella_color.jpg" },
+      { name: "Londa Professional Color 7/43", price: 1100, brand: "Londa", category: "Краски для волос", image: "img/londa_color.jpg" },
+      { name: "Londa Balm Repair", price: 900, brand: "Londa", category: "Бальзамы", image: "img/londa_balm.jpg" },
+      { name: "Tigi Styling Wax", price: 1500, brand: "Tigi", category: "Стайлинг", image: "img/tigi_wax.jpg" },
+      { name: "Matrix Mask Hydration", price: 1400, brand: "Matrix", category: "Маски", image: "img/matrix_mask.jpg" }
+    ];
+
+    // Оттенки (пример)
+    const shades = [
+      "4/0", "5/71", "6/0", "6/7", "7/43", "8/1", "8/71", "9/65", "9/96", "10/16"
+    ];
+
+    // Если категория = краски → показать оттенки
+    if (category === "Краски для волос") {
+      shadesContainer.style.display = "block";
+      shades.forEach(shade => {
+        const shadeBtn = document.createElement("div");
+shadeBtn.className = "shade";
+        shadeBtn.textContent = shade;
+        shadeBtn.onclick = () => {
+          searchInput.value = shade;
+          filterProducts();
+        };
+        shadeList.appendChild(shadeBtn);
+      });
+    }
+
+    function renderProducts(list) {
+      productGrid.innerHTML = "";
+      if (list.length === 0) {
+        productGrid.innerHTML = "<p>Нет товаров</p>";
+        return;
+      }
+      list.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <div class="product-name">${p.name}</div>
+          <div class="product-price">${p.price} ₽</div>
+        `;
+        productGrid.appendChild(card);
+      });
+    }
+
+    function renderProducts(list) {
+  productGrid.innerHTML = ''; 
+
+  if (list.length === 0) {
+    productGrid.innerHTML = '<p>❌ Нет товаров</p>';
+    return;
+  }
+
+  list.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+
+    let shadesHTML = '';
+    if (p.category === "Краски для волос" && p.shades && p.shades.length > 0) {
+      shadesHTML = `
+        <div class="shade-scroll" data-product="${p.name}">
+          ${p.shades.map(shade => `<div class="shade-item">${shade}</div>`).join('')}
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">${p.price} ₽</div>
+      ${shadesHTML}
+    `;
+
+    productGrid.appendChild(card);
+  });
+
+  // Назначаем обработчики для выбора оттенков
+  document.querySelectorAll(".shade-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const parent = item.closest(".shade-scroll");
+      const productName = parent.dataset.product;
+
+      // снимаем выделение у всех оттенков этого продукта
+      parent.querySelectorAll(".shade-item").forEach(el => el.classList.remove("selected"));
+
+      // выделяем выбранный оттенок
+      item.classList.add("selected");
+
+      console.log(`Выбран оттенок ${item.textContent} для ${productName}`);
+    });
+  });
+}
+
+// 🔎 Фильтрация товаров
+function filterProducts() {
+  const query = searchInput.value.toLowerCase();
+
+  const filtered = products.filter(p => {
+    const matchesBrand = !brand || p.brand === brand;
+    const matchesCategory = !category || p.category === category;
+    const matchesSearch = p.name.toLowerCase().includes(query);
+    return matchesBrand && matchesCategory && matchesSearch;
+  });
+
+  renderProducts(filtered);
+}
+
+// ✅ Поиск по вводу
+searchInput.addEventListener("input", filterProducts);
+
+// ✅ Первичная отрисовка (покажет всё сразу)
+filterProducts();
+
+  </script>
+
+</body>
+</html>
+
