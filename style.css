@@ -1,0 +1,15 @@
+
+body {font-family:Arial,sans-serif;margin:0;padding:0;text-align:center;}
+h1 {margin:10px;}
+.login-box{width:85%;max-width:350px;margin:40px auto;background:rgba(255,255,255,0.15);padding:20px;border-radius:15px;backdrop-filter:blur(8px);}
+.input-field{width:100%;padding:12px;margin:8px 0;border:none;border-radius:10px;background:rgba(255,255,255,0.2);color:white;}
+.login-btn{width:100%;padding:12px;margin-top:10px;background:#ff6a6a;border:none;color:white;font-size:16px;border-radius:10px;cursor:pointer;}
+.brand-btn,.category-btn{display:block;margin:10px auto;width:80%;max-width:300px;padding:15px;background:rgba(255,255,255,0.2);border:none;border-radius:15px;font-size:18px;color:white;cursor:pointer;}
+.back-btn{margin:15px;padding:10px 20px;background:rgba(255,255,255,0.3);border:none;border-radius:20px;color:white;}
+.cart-btn{padding:10px 15px;border:2px solid #ff4081;background:white;color:#ff4081;border-radius:20px;cursor:pointer;}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:10px;}
+.product-card{background:#fff;border-radius:10px;padding:10px;text-align:center;}
+.product-card img{width:100%;height:150px;object-fit:contain;}
+.shade-scroll{display:flex;gap:8px;overflow-x:auto;padding:5px;}
+.shade-btn{flex-shrink:0;padding:5px 10px;border:1px solid #ccc;border-radius:8px;cursor:pointer;}
+.shade-btn.active{background:#ff4081;color:white;font-weight:bold;}

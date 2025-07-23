@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🛒 Ваша корзина</h1>
+  <div id="cartItems"></div>
+  <h2 id="totalSum"></h2>
+  <button class="login-btn" onclick="window.location.href='checkout.html'">✅ Оформить заказ</button>
+  <button class="back-btn" onclick="window.history.back()">⬅ Назад</button>
+<script>
+  let cart=JSON.parse(localStorage.getItem("cart")||"[]");
+  const container=document.getElementById("cartItems");
+  let total=0;
+  cart.forEach(item=>{
+    let div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`<b>${item.name}</b> - ${item.price} ₽`;
+    container.appendChild(div);
+    total+=item.price;
+  });
+  document.getElementById("totalSum").textContent="Итого: "+total+" ₽";
+</script>
+</body>
+</html>
