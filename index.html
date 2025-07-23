@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход | Якрасота</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f72f7c, #eeb928);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .login-card {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 340px; /* Чуть шире для красоты */
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.507);
+    }
+  
+    .login-card h1 {
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+  
+    /* Все элементы одинаковой ширины */
+    .login-card input,
+    .login-card button {
+      display: block;
+      width: 100%; /* Теперь и поля, и кнопка одинаково широкие */
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+  
+    .login-card input {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+  
+    .login-card input::placeholder {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  
+    .login-card button {
+      background: #f35f4c;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .login-card button:hover {
+      background: #f12720;
+    }
+  
+    /* Доп. ссылки */
+    .login-card .links {
+      margin-top: 10px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .login-card .links label,
+    .login-card .links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h1>💄 Якрасота</h1>
+    <form id="loginForm">
+      <input type="email" placeholder="E-mail" required>
+      <input type="tel" placeholder="Телефон" required>
+      <input type="password" placeholder="Пароль" required>
+      <button type="submit">Войти</button>
+    </form>
+    <div class="links">
+      <label><input type="checkbox"> Запомнить</label>
+      <a href="#">Забыли пароль?</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      // При успешном входе перенаправляем на brands.html
+      window.location.href = "brands.html";
+    });
+  </script>
+</body>
+</html>
