@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Товары | Якрасота</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+    }
+    header {
+      text-align: center;
+      padding: 15px;
+      background: #ff7eb3;
+      color: white;
+      font-size: 20px;
+    }
+    .search-filter {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+    }
+    .search-filter input {
+      width: 65%;
+      padding: 8px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 10px;
+    }
+    .product {
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .product img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .product h3 {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .product .price {
+      color: #ff4d6d;
+      font-weight: bold;
+    }
+    .pagination {
+      text-align: center;
+      padding: 15px;
+    }
+    .pagination button {
+      padding: 8px 15px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 8px;
+      background: #ff7eb3;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header id="title"></header>
+  <div class="search-filter">
+    <input type="text" id="searchInput" placeholder="Поиск товаров..." oninput="renderProducts()">
+  </div>
+  <div class="grid" id="productGrid"></div>
+  <div class="pagination">
+    <button onclick="prevPage()">⬅ Назад</button>
+    <span id="pageInfo"></span>
+    <button onclick="nextPage()">Вперед ➡</button>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const brand = urlParams.get('brand');
+    const category = urlParams.get('category');
+    document.getElementById('title').innerText = brand + ' → ' + category;
+
+    const products = [];
+    for (let i=1; i<=30; i++) {
+      products.push({
+        name: brand + ' ' + category + ' ' + i,
+        price: (1000 + i*10),
+        img: 'https://via.placeholder.com/200x200?text=Product+' + i
+      });
+    }
+
+    let currentPage = 1;
+    const itemsPerPage = 6;
+
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      const searchValue = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = products.filter(p => p.name.toLowerCase().includes(searchValue));
+
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      if (currentPage > totalPages) currentPage = totalPages || 1;
+      const start = (currentPage - 1) * itemsPerPage;
+      const pageItems = filtered.slice(start, start + itemsPerPage);
+
+      grid.innerHTML = '';
+      pageItems.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <img src="${p.img}">
+          <h3>${p.name}</h3>
+          <div class="price">${p.price} ₽</div>
+        `;
+        grid.appendChild(div);
+      });
+      document.getElementById('pageInfo').innerText = `Стр. ${currentPage} из ${totalPages}`;
+    }
+
+    function nextPage(){ currentPage++; renderProducts(); }
+    function prevPage(){ if(currentPage>1) currentPage--; renderProducts(); }
+
+    renderProducts();
+  </script>
+</body>
+</html>
