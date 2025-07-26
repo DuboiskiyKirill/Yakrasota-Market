@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Товары</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #ff9ac9, #ff6ca5);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: white;
+      margin: 20px 0 10px;
+      font-size: 26px;
+    }
+
+    /* Поле поиска */
+    .search-box {
+      width: 90%;
+      max-width: 400px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 20px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 15px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 10px 0;
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: scale(1.03);
+    }
+
+    /* Фото товара */
+    .product-card img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+    }
+
+    /* Цена – сразу после фото */
+    .product-price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ff4081;
+      margin: 10px 0 5px;
+    }
+
+    /* Название – под ценой */
+    .product-name {
+      font-size: 16px;
+      font-weight: normal;
+      margin: 0 8px 10px;
+      text-align: center;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Кнопка "Заказать" */
+    .order-btn {
+      background: #ff4081;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 90%;
+      margin-top: auto;
+      transition: background 0.3s;
+    }
+
+    .order-btn:hover {
+      background: #e91e63;
+    }
+
+    /* Одна карточка в строке для мини-приложения */
+    @media (max-width: 768px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* На ПК – сетка 4 карточки как WB */
+    @media (min-width: 1024px) {
+      .product-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Товары</h1>
+
+  <!-- Поле поиска -->
+  <input type="text" class="search-box" id="searchInput" placeholder="Поиск товара по названию...">
+
+  <div class="product-grid" id="productGrid">
+    <!-- Товары будут сгенерированы JS -->
+  </div>
+
+  <script>
+    // База товаров
+    const products = [
+      {
+        name: "Шампунь TIGI",
+        price: 1200,
+        image: "tigi1.jpg"
+      },
+      {
+        name: "Бальзам Londa для волос интенсивное питание и блеск",
+        price: 950,
+        image: "tigi1.jpg"
+      },
+      {
+        name: "Краска Wella профессиональная стойкая",
+        price: 700,
+        image: "tigi1.jpg"
+      },
+      {
+        name: "Маска Matrix для глубокого восстановления",
+        price: 1500,
+        image: "tigi1.jpg"
+      },
+      {
+        name: "Шампунь Schwarzkopf для объема и блеска",
+        price: 1750,
+        image: "tigi1.jpg"
+      },
+      {
+        name: "Краска Wella Color Touch",
+        price: 800,
+        image: "tigi1.jpg"
+      },
+      {
+        name: "Шампунь Schwarzkopf для объема и блеска",
+        price: 1750,
+        image: "tigi1.jpg"
+      },
+      {
+        name: "Краска Wella Color Touch",
+        price: 800,
+        image: "tigi1.jpg"
+      }
+    ];
+
+    const productGrid = document.getElementById("productGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    // Функция отрисовки товаров
+    function renderProducts(list) {
+      productGrid.innerHTML = ""; // очистка
+      if (list.length === 0) {
+        productGrid.innerHTML = "<p style='color:white;font-size:18px;'>❌ Товары не найдены</p>";
+        return;
+}
+
+      list.forEach(p => {
+        const card = document.createElement("div");
+        card.classList.add("product-card");
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <div class="product-price">${p.price} ₽</div>
+          <div class="product-name">${p.name}</div>
+          <button class="order-btn">✅ Заказать</button>
+        `;
+        productGrid.appendChild(card);
+      });
+    }
+
+    // Функция фильтрации по поиску
+    function filterProducts() {
+      const query = searchInput.value.toLowerCase();
+      const filtered = products.filter(p =>
+        p.name.toLowerCase().includes(query)
+      );
+      renderProducts(filtered);
+    }
+
+    // Слушатель ввода текста
+    searchInput.addEventListener("input", filterProducts);
+
+    // Первичная отрисовка всех товаров
+    renderProducts(products);
+  </script>
+
+</body>
+</html>
