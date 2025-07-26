@@ -1,0 +1,58 @@
+[
+  {
+    "brand": "tigi",
+    "category": "Шампуни",
+    "name": "Шампунь TIGI Bed Head",
+    "price": 1200,
+    "image": "tigi1.jpg"
+  },
+  {
+    "brand": "tigi",
+    "category": "Бальзамы",
+    "name": "Бальзам TIGI интенсивное питание",
+    "price": 950,
+    "image": "tigi1.jpg"
+  },
+  {
+    "brand": "tigi",
+    "category": "Шампуни",
+    "name": "Спрей TIGI для блеска",
+    "price": 700,
+    "image": "tigi1.jpg"
+  },
+  {
+    "brand": "tigi",
+    "category": "Стайлинг",
+    "name": "Мусс TIGI для укладки",
+    "price": 1500,
+    "image": "tigi1.jpgg"
+  },
+  {
+    "brand": "tigi",
+    "category": "Шампуни",
+    "name": "Шампунь годнес",
+    "price": 1800,
+    "image": "tigi1.jpg"
+  },
+  {
+    "brand": "Londa",
+    "category": "Шампуни",
+    "name": "Краска Londa Color",
+    "price": 800,
+    "image": "tigi1.jpg"
+  },
+  {
+    "brand": "Wella",
+    "category": "Шампуни",
+    "name": "Шампунь Wella Professionals",
+    "price": 1400,
+    "image": "tigi1.jpg"
+  },
+  {
+    "brand": "Wella",
+    "category": "Шампуни",
+    "name": "Краска Wella Koleston",
+    "price": 900,
+    "image": "tigi1.jpg"
+  }
+]
