@@ -35,7 +35,7 @@
 /* Контейнер со всеми карточками */
 #productGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Автоматическая адаптация */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 2fr)); /* Автоматическая адаптация */
   gap: 15px;
   justify-content: center;
   padding: 20px;
@@ -45,6 +45,8 @@
 
 /* Карточка товара */
 .product-card {
+  max-width: 240px;
+  width: 100%;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -52,7 +54,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 10px 10px;
+  /*padding: 0 10px 10px;*/
   transition: transform 0.25s;
 }
 
@@ -62,8 +64,8 @@
 
     /* Фото товара */
     .product-card img {
-      width: 100%;
-      aspect-ratio: 3 / 4;
+      width: auto;
+      object-fit: cover;
       object-fit: cover;
     }
 
