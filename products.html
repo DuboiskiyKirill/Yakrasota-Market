@@ -104,18 +104,30 @@
       background: #e91e63;
     }
     /* Кнопка Назад */
-.back-btn {
-  position: absolute;         /* Закрепляем в углу */
-  top: 0px;                  /* Отступ сверху */
-  left: 20px;                 /* Отступ слева */
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+.search-container {
+  display: flex;
+  align-items: center;
   padding: 10px 20px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 0 10px 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.back-btn {
+  background: none;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  font-size: 18px;
+  color: #ff4081;
+  margin-right: 10px;
   cursor: pointer;
-  transition: background 0.3s;
+}
+
+.search-input {
+  border: none;
+  flex-grow: 1;
+  font-size: 16px;
+  outline: none;
 }
 
 .back-btn:hover {
