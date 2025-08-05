@@ -35,7 +35,7 @@
 /* Контейнер со всеми карточками */
 #productGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 2fr)); /* Автоматическая адаптация */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 2fr)); /* Автоматическая адаптация */
   gap: 15px;
   justify-content: center;
   padding: 20px;
@@ -45,7 +45,8 @@
 
 /* Карточка товара */
 .product-card {
-  max-width: 240px;
+  height:auto;
+  object-fit:contain;
   width: 100%;
   background: white;
   border-radius: 12px;
