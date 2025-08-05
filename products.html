@@ -146,12 +146,15 @@
   
 </head>
 <body>
-
-  <button class="back-btn" onclick="goBack()">← Назад</button>
-
   <h1>Товары</h1>
-  <input type="text" class="search-box" id="searchInput" placeholder="Поиск товара по названию...">
+  
+  <div class="search-container">
+  <button class="back-btn" onclick="goBack()">← Назад</button>
+  <input type="text" class="search-input" placeholder="Поиск товара по названию..." />
+</div>
 
+  
+  
   <div id="productGrid">Загрузка...</div>
 
   <script>
