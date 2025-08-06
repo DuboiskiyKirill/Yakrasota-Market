@@ -22,10 +22,11 @@
   },
   {
     "brand": "tigi",
-    "category": "Стайлинг",
-    "name": "Мусс TIGI для укладки",
+    "category": "Краска",
+    "name": "Краска TIGI для волос",
     "price": 1500,
-    "image": "tigi1.jpgg"
+    "image": "tigi1.jpg"
+    "shades": ["3/0", "4/0","5/0","6/0","7/0","8/0"]
   },
   {
     "brand": "tigi",
@@ -55,4 +56,5 @@
     "price": 900,
     "image": "tigi1.jpg"
   }
+
 ]
