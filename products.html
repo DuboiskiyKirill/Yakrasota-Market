@@ -99,30 +99,44 @@
       color: black;
     }
 
-    .shades-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 5px;
-      margin: 5px 0;
-      padding: 0 10px;
-    }
+ .shade-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding: 8px 10px;
+  margin: 0 auto 10px;
+  max-width: 90%;
+  scrollbar-width: none; /* Firefox */
+}
+.shade-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
 
-    .shade-btn {
-      padding: 6px 10px;
-      font-size: 14px;
-      background-color: #eee;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-      color: black;
-    }
+.shade-option {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
 
-    .shade-btn.selected {
-      background-color: #ff4081;
-      color: white;
-      font-weight: bold;
-    }
+.shade-option input {
+  display: none;
+}
+
+.shade-option span {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f9f9f9;
+  color: #333;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.shade-option input:checked + span {
+  background: #ff4081;
+  color: white;
+  border-color: #ff4081;
+}
 
     .order-btn {
       background: #ff4081;
