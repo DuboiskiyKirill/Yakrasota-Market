@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,14 +7,14 @@
   <title>Товары</title>
   <style>
     body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: linear-gradient(180deg, #ff80b2, #ff9ac9);
-  margin: 0;
-  padding: 0;
-  color: white;
-  position: relative;  /* Это важно для кнопки */
-}
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(180deg, #ff80b2, #ff9ac9);
+      margin: 0;
+      padding: 0;
+      color: white;
+      position: relative;
+    }
 
     h1 {
       color: white;
@@ -21,29 +22,47 @@
       font-size: 26px;
     }
 
-    /* Поле поиска */
-    .search-box {
-      width: 90%;
-      max-width: 400px;
-      padding: 12px;
-      font-size: 16px;
+    .search-container {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: white;
       border-radius: 10px;
-      border: none;
-      margin-bottom: 20px;
+      margin: 0 10px 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-/* Контейнер со всеми карточками */
-#productGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* По умолчанию 4 карточки на ПК */
-  gap: 15px;
-  justify-content: center;
-  padding: 10px;
-  max-width: 1200px;
-  margin: 0 auto; /* Центрируем всю сетку */
-}
+    .back-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #ff4081;
+      margin-right: 10px;
+      cursor: pointer;
+    }
 
-.product-card {
+    .search-input {
+      border: none;
+      flex-grow: 1;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    #productGrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      justify-content: center;
+      padding: 10px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .product-card {
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -59,14 +78,12 @@
       transform: scale(1.03);
     }
 
-    /* Фото товара */
     .product-card img {
       width: 100%;
       aspect-ratio: 3 / 4;
       object-fit: cover;
     }
 
-    /* Цена – сразу после фото */
     .product-price {
       font-size: 18px;
       font-weight: bold;
@@ -74,23 +91,39 @@
       margin: 10px 0 5px;
     }
 
-    /* Название – под ценой */
     .product-name {
       font-size: 16px;
       font-weight: normal;
       margin: 0 8px 10px;
       text-align: center;
       color: black;
-      /*display: -webkit-box;*/
-      /*-webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;*/
-      display:block;
-      overflow:visible;
-      white-space:normal;
     }
 
-    /* Кнопка "Заказать" */
+    .shades-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px;
+      margin: 5px 0;
+      padding: 0 10px;
+    }
+
+    .shade-btn {
+      padding: 6px 10px;
+      font-size: 14px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      color: black;
+    }
+
+    .shade-btn.selected {
+      background-color: #ff4081;
+      color: white;
+      font-weight: bold;
+    }
+
     .order-btn {
       background: #ff4081;
       color: white;
@@ -107,106 +140,52 @@
     .order-btn:hover {
       background: #e91e63;
     }
-    /* Кнопка Назад */
-.search-container {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: white;
-  border-radius: 10px;
-  margin: 0 10px 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
-.back-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: #ff4081;
-  margin-right: 10px;
-  cursor: pointer;
-}
+    @media (max-width: 1024px) {
+      #productGrid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
 
-.search-input {
-  border: none;
-  flex-grow: 1;
-  font-size: 16px;
-  outline: none;
-}
+    @media (max-width: 768px) {
+      #productGrid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-    /* Планшет: 3 карточки в ряд */
-@media (max-width: 1024px) {
-  #productGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Телефон: 2 карточки в ряд */
-@media (max-width: 768px) {
-  #productGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Очень узкий экран: 1 карточка */
-@media (max-width: 480px) {
-  #productGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+    @media (max-width: 480px) {
+      #productGrid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
-  
 </head>
 <body>
   <h1>Товары</h1>
-  
   <div class="search-container">
-  <button class="back-btn" onclick="goBack()">← Назад</button>
-  <input type="text" class="search-input" placeholder="Поиск товара по названию..." />
-</div>
-
-  
-  
+    <button class="back-btn" onclick="goBack()">← Назад</button>
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию..." />
+  </div>
   <div id="productGrid">Загрузка...</div>
-
   <script>
-    // --- Читаем параметры из URL ---
     const params = new URLSearchParams(window.location.search);
     const selectedBrand = params.get("brand");
     const selectedCategory = params.get("category");
-
-    console.log("✅ URL params:", selectedBrand, selectedCategory);
 
     const productGrid = document.getElementById("productGrid");
     const searchInput = document.getElementById("searchInput");
     let allProducts = [];
 
-    // --- Проверяем, есть ли бренд и категория ---
     if (!selectedBrand || !selectedCategory) {
       productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
     } else {
       const jsonFile = `data/${selectedBrand.toLowerCase()}.json`;
-      console.log("📂 Загружаем JSON:", jsonFile);
-
       fetch(jsonFile)
-        .then(res => {
-          console.log("🔄 Ответ fetch:", res);
-          return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
-          console.log("📦 Загруженные товары:", data);
-
-          // Фильтруем только по категории (бренд уже выбран)
           allProducts = data.filter(p =>
             p.category.trim().toLowerCase() === selectedCategory.trim().toLowerCase()
           );
-
-          console.log("✅ Отфильтрованные товары:", allProducts);
-
           if (allProducts.length === 0) {
             productGrid.innerHTML = "<p style='color:white;'>❌ Нет товаров</p>";
           } else {
@@ -214,39 +193,40 @@
           }
         })
         .catch(err => {
-          console.error("❌ Ошибка загрузки JSON:", err);
           productGrid.innerHTML = "<p style='color:white;'>Ошибка загрузки товаров</p>";
         });
     }
 
-    // --- Отрисовка товаров ---
     function renderProducts(list) {
       productGrid.innerHTML = "";
       list.forEach(p => {
         const card = document.createElement("div");
         card.classList.add("product-card");
+
+        const shades = (p.shades || []).map(shade =>
+          `<button class="shade-btn" onclick="this.classList.toggle('selected')">${shade}</button>`
+        ).join("");
+
         card.innerHTML = `
           <img src="${p.image}" alt="${p.name}">
           <div class="product-price">${p.price} ₽</div>
           <div class="product-name">${p.name}</div>
+          ${shades ? `<div class="shades-container">${shades}</div>` : ""}
           <button class="order-btn">Заказать</button>
         `;
         productGrid.appendChild(card);
       });
     }
 
-    // --- Поиск по названию ---
     searchInput.addEventListener("input", function() {
       const q = searchInput.value.toLowerCase();
       const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
       renderProducts(filtered);
     });
 
-     // --- Кнопка назад ---
-     function goBack() {
+    function goBack() {
       window.history.back();
     }
   </script>
-
 </body>
 </html>
