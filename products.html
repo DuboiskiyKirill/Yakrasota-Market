@@ -217,9 +217,16 @@
         const card = document.createElement("div");
         card.classList.add("product-card");
 
-        const shades = (p.shades || []).map(shade =>
-          `<button class="shade-btn" onclick="this.classList.toggle('selected')">${shade}</button>`
-        ).join("");
+        const shades = p.shades ? `
+  <div class="shade-scroll">
+    ${p.shades.map(s => `
+      <label class="shade-option">
+        <input type="checkbox" name="shade-${p.name}" value="${s}">
+        <span>${s}</span>
+      </label>
+    `).join("")}
+  </div>
+` : "";
 
         card.innerHTML = `
           <img src="${p.image}" alt="${p.name}">
