@@ -232,7 +232,7 @@
           <img src="${p.image}" alt="${p.name}">
           <div class="product-price">${p.price} ₽</div>
           <div class="product-name">${p.name}</div>
-          ${shades}
+          <button class="select-shades-btn" onclick='openShadeModal("${p.name}", ${JSON.stringify(p.shades)})'>Выбрать оттенки</button>
           <button class="order-btn">Заказать</button>
         `;
         productGrid.appendChild(card);
