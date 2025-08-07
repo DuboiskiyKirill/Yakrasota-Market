@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -15,13 +14,11 @@
       color: white;
       position: relative;
     }
-
     h1 {
       color: white;
       margin: 20px 0 10px;
       font-size: 26px;
     }
-
     .search-container {
       display: flex;
       align-items: center;
@@ -31,7 +28,6 @@
       margin: 0 10px 15px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-
     .back-btn {
       background: none;
       border: none;
@@ -40,18 +36,15 @@
       margin-right: 10px;
       cursor: pointer;
     }
-
     .search-input {
       border: none;
       flex-grow: 1;
       font-size: 16px;
       outline: none;
     }
-
     .back-btn:hover {
       background: rgba(255, 255, 255, 0.4);
     }
-
     #productGrid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -61,7 +54,6 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-
     .product-card {
       background: white;
       border-radius: 12px;
@@ -73,24 +65,20 @@
       padding: 0 0 10px 0;
       transition: transform 0.2s;
     }
-
     .product-card:hover {
       transform: scale(1.03);
     }
-
     .product-card img {
       width: 100%;
       aspect-ratio: 3 / 4;
       object-fit: cover;
     }
-
     .product-price {
       font-size: 18px;
       font-weight: bold;
       color: #ff4081;
       margin: 10px 0 5px;
     }
-
     .product-name {
       font-size: 16px;
       font-weight: normal;
@@ -98,61 +86,53 @@
       text-align: center;
       color: black;
     }
-
- .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  padding-top: 100px;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: auto;
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 400px;
-  text-align: center;
-}
-
-.shade-picker {
-  max-height: 150px;
-  overflow-y: auto;
-  margin: 15px 0;
-  text-align: left;
-}
-
-.shade-picker label {
-  display: block;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
-}
-
-.confirm-btn {
-  background: #ff4081;
-  border: none;
-  padding: 10px 20px;
-  color: black;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.select-shades-btn {
-  background: #e0e0e0;
-  color: #333;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      padding-top: 100px;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .shade-picker {
+      max-height: 150px;
+      overflow-y: auto;
+      margin: 15px 0;
+      text-align: left;
+    }
+    .shade-picker label {
+      display: block;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .confirm-btn {
+      background: #ff4081;
+      border: none;
+      padding: 10px 20px;
+      color: black;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .select-shades-btn {
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-top: 5px;
+    }
     .order-btn {
       background: #ff4081;
       color: white;
@@ -165,23 +145,19 @@
       margin-top: auto;
       transition: background 0.3s;
     }
-
     .order-btn:hover {
       background: #e91e63;
     }
-
     @media (max-width: 1024px) {
       #productGrid {
         grid-template-columns: repeat(3, 1fr);
       }
     }
-
     @media (max-width: 768px) {
       #productGrid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
-
     @media (max-width: 480px) {
       #productGrid {
         grid-template-columns: repeat(2, 1fr);
@@ -197,21 +173,19 @@
   </div>
   <div id="productGrid">Загрузка...</div>
 
-<!-- Модальное окно -->
-<div id="shadeModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h3>Выберите оттенок</h3>
-    <div id="shadePicker" class="shade-picker"></div>
-    <button id="confirmShade" class="confirm-btn">Выбрать</button>
+  <div id="shadeModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Выберите оттенок</h3>
+      <div id="shadePicker" class="shade-picker"></div>
+      <button id="confirmShade" class="confirm-btn">Выбрать</button>
+    </div>
   </div>
-</div>
-  
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const selectedBrand = params.get("brand");
     const selectedCategory = params.get("category");
-
     const productGrid = document.getElementById("productGrid");
     const searchInput = document.getElementById("searchInput");
     let allProducts = [];
@@ -243,29 +217,20 @@
         const card = document.createElement("div");
         card.classList.add("product-card");
 
-        const shades = p.shades ? `
-  <div class="shade-scroll">
-    ${p.shades.map(s => `
-      <label class="shade-option">
-        <input type="checkbox" name="shade-${p.name}" value="${s}">
-        <span>${s}</span>
-      </label>
-    `).join("")}
-  </div>
-` : "";
+        const hasShades = p.category.toLowerCase() === "краска" && Array.isArray(p.shades) && p.shades.length;
+        const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
 
         card.innerHTML = `
           <img src="${p.image}" alt="${p.name}">
           <div class="product-price">${p.price} ₽</div>
           <div class="product-name">${p.name}</div>
-          ${p.category.toLowerCase() === "краска" && p.shades ?
-  `<button class="select-shades-btn"
-           data-name="${p.name}"
-           data-shades="${encodeURIComponent(JSON.stringify(p.shades))}">
-     Выбрать оттенки
-   </button>`
-  : ""
-}
+          ${hasShades ? `
+            <button class="select-shades-btn"
+                    data-name="${p.name}"
+                    data-shades="${encodedShades}">
+              Выбрать оттенки
+            </button>` : ""
+          }
           <button class="order-btn">Заказать</button>
         `;
         productGrid.appendChild(card);
@@ -282,36 +247,31 @@
       window.history.back();
     }
 
-  // Открытие модального окна
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("select-shades-btn")) {
-    const btn = e.target;
-    const productName = btn.getAttribute("data-name");
-    const shades = JSON.parse(decodeURIComponent(btn.getAttribute("data-shades")));
-    const shadePicker = document.getElementById("shadePicker");
-    shadePicker.innerHTML = shades.map(s => `
-      <label>
-        <input type="checkbox" value="${s}"> ${s}
-      </label>
-    `).join("");
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("select-shades-btn")) {
+        const btn = e.target;
+        const productName = btn.getAttribute("data-name");
+        const shades = JSON.parse(decodeURIComponent(btn.getAttribute("data-shades")));
+        const shadePicker = document.getElementById("shadePicker");
+        shadePicker.innerHTML = shades.map(s => `
+          <label>
+            <input type="checkbox" value="${s}"> ${s}
+          </label>
+        `).join("");
+        document.getElementById("shadeModal").style.display = "block";
+        shadePicker.setAttribute("data-product", productName);
+      }
+    });
 
-    document.getElementById("shadeModal").style.display = "block";
-    shadePicker.setAttribute("data-product", productName);
-  }
-});
+    document.querySelector(".close").onclick = () => {
+      document.getElementById("shadeModal").style.display = "none";
+    };
 
-// Закрытие модалки
-document.querySelector(".close").onclick = () => {
-  document.getElementById("shadeModal").style.display = "none";
-};
-
-// Подтверждение выбора
-document.getElementById("confirmShade").onclick = () => {
-  const selected = [...document.querySelectorAll('#shadePicker input:checked')].map(i => i.value);
-  console.log("Выбраны оттенки:", selected);
-  document.getElementById("shadeModal").style.display = "none";
-};
-  
-</script>
+    document.getElementById("confirmShade").onclick = () => {
+      const selected = [...document.querySelectorAll('#shadePicker input:checked')].map(i => i.value);
+      console.log("Выбраны оттенки:", selected);
+      document.getElementById("shadeModal").style.display = "none";
+    };
+  </script>
 </body>
 </html>
