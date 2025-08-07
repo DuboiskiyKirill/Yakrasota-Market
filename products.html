@@ -100,31 +100,58 @@
     }
 
  .modal {
-  display: none; position: fixed; z-index: 9999;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 100px;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
 }
+
 .modal-content {
-  background: white; margin: 15% auto; padding: 20px;
-  width: 90%; max-width: 400px; border-radius: 12px;
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
 }
-.shade-list {
-  max-height: 200px; overflow-y: auto;
+
+.shade-picker {
+  max-height: 150px;
+  overflow-y: auto;
+  margin: 15px 0;
+  text-align: left;
 }
-.shade-item {
-  padding: 10px; border-bottom: 1px solid #eee;
-  display: flex; justify-content: space-between; cursor: pointer;
+
+.shade-picker label {
+  display: block;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
 }
-.shade-item.selected {
-  background-color: #fce4ec; font-weight: bold;
-}
+
 .confirm-btn {
-  margin-top: 10px; background: #ff4081; color: white;
-  padding: 10px; width: 100%; border: none; border-radius: 6px;
+  background: #ff4081;
+  border: none;
+  padding: 10px 20px;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
 }
-.close-modal {
-  float: right; font-size: 24px; cursor: pointer;
+
+.select-shades-btn {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-top: 5px;
 }
+
 
     .order-btn {
       background: #ff4081;
@@ -170,12 +197,13 @@
   </div>
   <div id="productGrid">Загрузка...</div>
 
+<!-- Модальное окно -->
 <div id="shadeModal" class="modal">
   <div class="modal-content">
-    <span class="close-modal" onclick="closeModal()">&times;</span>
-    <h3 id="modalProductName">Выберите оттенки</h3>
-    <div id="shadeList" class="shade-list"></div>
-    <button class="confirm-btn" onclick="confirmShades()">Подтвердить</button>
+    <span class="close">&times;</span>
+    <h3>Выберите оттенок</h3>
+    <div id="shadePicker" class="shade-picker"></div>
+    <button id="confirmShade" class="confirm-btn">Выбрать</button>
   </div>
 </div>
   
@@ -230,7 +258,9 @@
           <img src="${p.image}" alt="${p.name}">
           <div class="product-price">${p.price} ₽</div>
           <div class="product-name">${p.name}</div>
-          <button class="select-shades-btn" onclick='openShadeModal("${p.name}", ${JSON.stringify(p.shades)})'>Выбрать оттенки</button>
+          ${p.category === "Краска" && p.shades ? `
+  <button class="select-shades-btn" data-name="${p.name}" data-shades='${JSON.stringify(p.shades)}'>Выбрать оттенки</button>
+` : ""}
           <button class="order-btn">Заказать</button>
         `;
         productGrid.appendChild(card);
@@ -246,52 +276,41 @@
     function goBack() {
       window.history.back();
     }
-  </script>
-  <script>
-let selectedShades = [];
-let currentProduct = "";
 
-function openShadeModal(productName, shades) {
-  currentProduct = productName;
-  selectedShades = [];
 
-  document.getElementById("modalProductName").textContent = Оттенки для: ${productName};
-  const shadeList = document.getElementById("shadeList");
-  shadeList.innerHTML = "";
 
-  shades.forEach(shade => {
-    const div = document.createElement("div");
-    div.className = "shade-item";
-    div.textContent = shade;
-    div.onclick = () => {
-      div.classList.toggle("selected");
-      if (selectedShades.includes(shade)) {
-        selectedShades = selectedShades.filter(s => s !== shade);
-      } else {
-        selectedShades.push(shade);
-      }
-    };
-    shadeList.appendChild(div);
-  });
+    
+  // Открытие модального окна
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("select-shades-btn")) {
+    const btn = e.target;
+    const productName = btn.getAttribute("data-name");
+    const shades = JSON.parse(btn.getAttribute("data-shades"));
 
-  document.getElementById("shadeModal").style.display = "block";
-}
+    const shadePicker = document.getElementById("shadePicker");
+    shadePicker.innerHTML = shades.map(s => `
+      <label>
+        <input type="checkbox" value="${s}"> ${s}
+      </label>
+    `).join("");
 
-function closeModal() {
-  document.getElementById("shadeModal").style.display = "none";
-}
-
-function confirmShades() {
-  alert(`Вы выбрали оттенки для ${currentProduct}: ${selectedShades.join(", ")}`);
-  closeModal();
-}
-
-window.onclick = function(event) {
-  const modal = document.getElementById("shadeModal");
-  if (event.target === modal) {
-    closeModal();
+    document.getElementById("shadeModal").style.display = "block";
+    shadePicker.setAttribute("data-product", productName);
   }
-}
+});
+
+// Закрытие модалки
+document.querySelector(".close").onclick = () => {
+  document.getElementById("shadeModal").style.display = "none";
+};
+
+// Подтверждение выбора
+document.getElementById("confirmShade").onclick = () => {
+  const selected = [...document.querySelectorAll('#shadePicker input:checked')].map(i => i.value);
+  console.log("Выбраны оттенки:", selected);
+  document.getElementById("shadeModal").style.display = "none";
+};
+  </script>
 </script>
 </body>
 </html>
