@@ -258,9 +258,14 @@
           <img src="${p.image}" alt="${p.name}">
           <div class="product-price">${p.price} ₽</div>
           <div class="product-name">${p.name}</div>
-          ${p.category === "Краска" && p.shades ? `
-  <button class="select-shades-btn" data-name="${p.name}" data-shades='${JSON.stringify(p.shades)}'>Выбрать оттенки</button>
-` : ""}
+          ${p.category.toLowerCase() === "краска" && p.shades ?
+  `<button class="select-shades-btn"
+           data-name="${p.name}"
+           data-shades="${encodeURIComponent(JSON.stringify(p.shades))}">
+     Выбрать оттенки
+   </button>`
+  : ""
+}
           <button class="order-btn">Заказать</button>
         `;
         productGrid.appendChild(card);
@@ -282,8 +287,7 @@ document.addEventListener("click", function (e) {
   if (e.target.classList.contains("select-shades-btn")) {
     const btn = e.target;
     const productName = btn.getAttribute("data-name");
-    const shades = JSON.parse(btn.getAttribute("data-shades"));
-
+    const shades = JSON.parse(decodeURIComponent(btn.getAttribute("data-shades")));
     const shadePicker = document.getElementById("shadePicker");
     shadePicker.innerHTML = shades.map(s => `
       <label>
