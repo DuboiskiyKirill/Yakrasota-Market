@@ -165,16 +165,41 @@
   </div>
   <div id="productGrid">Загрузка...</div>
 
-  <div id="shadeModal" class="modal">
-    <div class="modal-content">
-      <h3>Выберите оттенки</h3>
-      <div id="shadePicker"></div>
-      <div style="text-align: right; margin-top: 10px;">
-        <button onclick="closeModal()">Назад</button>
-        <button onclick="confirmShades()">Выбрать</button>
+  <div id="shadeModal" class="modal fade-in">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('shadeModal').style.display='none'">&times;</span>
+    <h3>🎨 Выберите оттенок</h3>
+    <div id="shadePicker" class="shade-picker">
+      <div class="shade-line">
+        <label>
+          <input type="checkbox" value="1.0" />
+          <span>1.0 Черный</span>
+        </label>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">➖</button>
+          <span class="qty-count">1</span>
+          <button class="qty-btn plus">➕</button>
+        </div>
+      </div>
+      <div class="shade-line">
+        <label>
+          <input type="checkbox" value="3.0" />
+          <span>3.0 Темный шатен</span>
+        </label>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">➖</button>
+          <span class="qty-count">1</span>
+          <button class="qty-btn plus">➕</button>
+        </div>
       </div>
     </div>
+    <div class="modal-buttons">
+      <button class="cancel-btn" onclick="document.getElementById('shadeModal').style.display='none'">Назад</button>
+      <button class="confirm-btn">Выбрать</button>
+    </div>
   </div>
+</div>
+
 
   <script>
     const params = new URLSearchParams(window.location.search);
