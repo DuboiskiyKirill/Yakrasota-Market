@@ -180,11 +180,22 @@
 </head>
 <body>
   <h1>Товары</h1>
-  <div class="search-container">
-    <button class="back-btn" onclick="goBack()">← Назад</button>
-    <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию..." />
+ <div class="search-container">
+    <button class="back-btn" onclick="history.back()">← Назад</button>
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию...">
   </div>
   <div id="productGrid">Загрузка...</div>
+
+  <div id="shadeModal" class="modal">
+    <div class="modal-content">
+      <h3>🎨 Выберите оттенок</h3>
+      <div id="shadePicker"></div>
+      <div class="modal-buttons">
+        <button onclick="closeModal()">Назад</button>
+        <button onclick="confirmShades()">Заказать</button>
+      </div>
+    </div>
+  </div>
 
   <div id="shadeModal" class="modal">
     <div class="modal-content">
