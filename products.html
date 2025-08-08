@@ -264,7 +264,7 @@ let allProducts = [];
 if (!selectedBrand || !selectedCategory) {
   productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
 } else {
-  const jsonFile = `data/${selectedBrand.toLowerCase()}.json;`
+  const jsonFile = `main/data/${selectedBrand.toLowerCase()}.json;`
   fetch(jsonFile)
     .then(res => res.json())
     .then(data => {
