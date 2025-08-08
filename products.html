@@ -127,6 +127,46 @@
       padding: 8px;
       border-bottom: 1px solid #eee;
     }
+
+    .shade-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: black;
+}
+
+.shade-line label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qty-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qty-btn {
+  background: #ff4081;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.qty-count {
+  min-width: 20px;
+  text-align: center;
+  display: inline-block;
+}
+
+
+
+
+    
     .confirm-btn {
       background: #ff4081;
       border: none;
@@ -194,7 +234,19 @@
     </div>
   </div>
 
-  <script>
+  <div class="shade-line" data-shade="3/0">
+  <label>
+    <input type="checkbox" class="shade-check">
+    <span>3/0</span>
+  </label>
+  <div class="qty-wrapper">
+    <button class="qty-btn minus" disabled>-</button>
+    <span class="qty-count">1</span>
+    <button class="qty-btn plus" disabled>+</button>
+  </div>
+</div>
+
+    <script>
     const params = new URLSearchParams(window.location.search);
     const selectedBrand = params.get("brand");
     const selectedCategory = params.get("category");
@@ -247,7 +299,24 @@
         `;
         productGrid.appendChild(card);
       });
+
+      shadePicker.innerHTML = shades.map(s => `
+  <div class="shade-line" data-shade="${s}">
+    <label>
+      <input type="checkbox" class="shade-check">
+      <span>${s}</span>
+    </label>
+    <div class="qty-wrapper">
+      <button class="qty-btn minus" disabled>-</button>
+      <span class="qty-count">1</span>
+      <button class="qty-btn plus" disabled>+</button>
+    </div>
+  </div>
+`).join("");
+      
     }
+
+      
 
     searchInput.addEventListener("input", function() {
       const q = searchInput.value.toLowerCase();
@@ -284,6 +353,59 @@
       console.log("Выбраны оттенки:", selected);
       document.getElementById("shadeModal").style.display = "none";
     };
+
+
+// Обработка клика по чекбоксу
+document.addEventListener("change", function(e) {
+  if (e.target.classList.contains("shade-check")) {
+    const container = e.target.closest(".shade-line");
+    const minus = container.querySelector(".minus");
+    const plus = container.querySelector(".plus");
+    const qty = container.querySelector(".qty-count");
+
+    if (e.target.checked) {
+      plus.disabled = false;
+      minus.disabled = false;
+    } else {
+      plus.disabled = true;
+      minus.disabled = true;
+      qty.textContent = "1";
+    }
+  }
+});
+
+// +/- обработка
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
+    const container = e.target.closest(".shade-line");
+    const qty = container.querySelector(".qty-count");
+    let count = parseInt(qty.textContent);
+
+    if (e.target.classList.contains("plus")) count++;
+    if (e.target.classList.contains("minus") && count > 1) count--;
+
+    qty.textContent = count;
+  }
+});
+
+// Сбор выбранных оттенков
+document.getElementById("confirmShade").onclick = () => {
+  const selected = [...document.querySelectorAll('.shade-line')].map(line => {
+    const checked = line.querySelector(".shade-check").checked;
+    if (!checked) return null;
+
+    return {
+      shade: line.getAttribute("data-shade"),
+      qty: parseInt(line.querySelector(".qty-count").textContent)
+    };
+  }).filter(Boolean);
+
+  console.log("Выбраны оттенки:", selected); // отправка в корзину
+
+  document.getElementById("shadeModal").style.display = "none";
+};
+
+      
   </script>
 </body>
 </html>
