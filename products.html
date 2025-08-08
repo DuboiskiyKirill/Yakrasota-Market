@@ -202,8 +202,6 @@
       color: white;
       border: none;
       padding: 4px 10px;
-
-> Кирилл:
 margin: 0 5px;
       border-radius: 8px;
       font-size: 16px;
@@ -343,3 +341,30 @@ function closeModal() {
 
 function adjustQty(index, delta) {
   const countSpan = document.getElementById(`qty-${index}`);
+let qty = parseInt(countSpan.textContent);
+  qty = Math.max(1, qty + delta);
+  countSpan.textContent = qty;
+}
+
+function confirmShades() {
+  const checked = document.querySelectorAll('#shadePicker input[type="checkbox"]:checked');
+  const result = [];
+
+  checked.forEach((cb, i) => {
+    const qty = document.getElementById(`qty-${i}`).textContent;
+    result.push(`${cb.value} — ${qty} шт.`);
+  });
+
+  alert("Добавлено в корзину:\n" + result.join("\n"));
+  closeModal();
+}
+
+searchInput.addEventListener("input", function() {
+  const q = searchInput.value.toLowerCase();
+  const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
+  renderProducts(filtered);
+});
+</script>
+
+</body>
+</html>
