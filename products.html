@@ -313,25 +313,85 @@ function renderProducts(products) {
       });
     }
 
-    document.addEventListener("click", function(e) {
-      if (e.target.classList.contains("select-shades-btn")) {
-        const shades = JSON.parse(e.target.getAttribute("data-shades"));
-        shadePicker.innerHTML = shades.map(s => `
-          <div class="shade-line" data-shade="${s}">
-            <label>
-              <input type="checkbox" class="shade-check">
-              <span>${s}</span>
-            </label>
-            <div class="qty-wrapper">
-              <button class="qty-btn minus" disabled>-</button>
-              <span class="qty-count">1</span>
-              <button class="qty-btn plus" disabled>+</button>
-            </div>
-          </div>
-        `).join("");
-        shadeModal.style.display = "flex";
-      }
-    });
+   document.addEventListener("click", function (e) {
+  // Открытие модального окна
+  if (e.target.classList.contains("select-shades-btn")) {
+    const btn = e.target;
+    const productName = btn.getAttribute("data-name");
+    const shades = JSON.parse(btn.getAttribute("data-shades"));
+
+    const shadePicker = document.getElementById("shadePicker");
+    const shadeModal = document.getElementById("shadeModal");
+
+    shadePicker.innerHTML = shades.map((s) => `
+      <div class="shade-line">
+        <label>
+          🎨 <input type="checkbox" value="${s}" data-shade="${s}" />
+          <span>${s}</span>
+        </label>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus" data-shade="${s}">➖</button>
+          <span class="qty-count" id="count-${s.replace('/', '-')}" data-shade="${s}">1</span>
+          <button class="qty-btn plus" data-shade="${s}">➕</button>
+        </div>
+      </div>
+    ).join("") + 
+      <button class="confirm-btn">Выбрать</button>
+      <button class="cancel-btn">Назад</button>
+    `;
+
+    shadeModal.classList.add("fade-in");
+    shadeModal.style.display = "block";
+
+    // Кол-во по умолчанию — 1
+    document.querySelectorAll('.qty-count').forEach(el => el.textContent = '1');
+  }
+
+  // Закрытие модального окна
+  if (e.target.classList.contains("cancel-btn")) {
+    document.getElementById("shadeModal").style.display = "none";
+  }
+
+  // Увеличение кол-ва
+  if (e.target.classList.contains("plus")) {
+    const shade = e.target.getAttribute("data-shade");
+    const countSpan = document.getElementById(`count-${shade.replace('/', '-')}`);
+    let count = parseInt(countSpan.textContent);
+    countSpan.textContent = count + 1;
+  }
+
+  // Уменьшение кол-ва
+  if (e.target.classList.contains("minus")) {
+    const shade = e.target.getAttribute("data-shade");
+    const countSpan = document.getElementById(`count-${shade.replace('/', '-')}`);
+    let count = parseInt(countSpan.textContent);
+    if (count > 1) countSpan.textContent = count - 1;
+  }
+
+  // Подтверждение выбора
+  if (e.target.classList.contains("confirm-btn")) {
+    const selected = Array.from(document.querySelectorAll(".shade-line"))
+      .map(line => {
+        const checkbox = line.querySelector("input[type='checkbox']");
+        const countSpan = line.querySelector(".qty-count");
+        if (checkbox.checked) {
+          return {
+            shade: checkbox.value,
+            count: parseInt(countSpan.textContent)
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    // ⚠️ Здесь можно добавить отправку в корзину
+    console.log("Выбранные оттенки:", selected);
+
+    // Закрыть окно
+    document.getElementById("shadeModal").style.display = "none";
+  }
+});
+
 
     document.addEventListener("change", function(e) {
       if (e.target.classList.contains("shade-check")) {
