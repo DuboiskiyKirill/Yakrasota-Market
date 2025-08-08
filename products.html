@@ -252,6 +252,52 @@
       });
     }
 
+function openModal(shades) {
+  const picker = document.getElementById("shadePicker");
+  picker.innerHTML = "";
+
+  shades.forEach((shade, index) => {
+    picker.innerHTML += `
+      <div class="shade-item">
+        <label><input type="checkbox" value="${shade}" /> ${shade}</label>
+        <div class="qty-wrapper">
+          <button class="qty-btn" onclick="adjustQty(${index}, -1)">−</button>
+          <span id="qty-${index}" class="qty-count">1</span>
+          <button class="qty-btn" onclick="adjustQty(${index}, 1)">+</button>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById("shadeModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("shadeModal").style.display = "none";
+}
+
+function adjustQty(index, delta) {
+  const countSpan = document.getElementById(`qty-${index}`);
+  let qty = parseInt(countSpan.textContent);
+  qty = Math.max(1, qty + delta);
+  countSpan.textContent = qty;
+}
+
+function confirmShades() {
+  const checked = document.querySelectorAll('#shadePicker input[type="checkbox"]:checked');
+  const result = [];
+
+  checked.forEach((cb, i) => {
+    const qty = document.getElementById(`qty-${i}`).textContent;
+    result.push(`${cb.value} — ${qty} шт.`);
+  });
+
+  alert("Добавлено в корзину:\n" + result.join("\n"));
+  closeModal();
+}
+
+
+    
     searchInput.addEventListener("input", function() {
       const q = searchInput.value.toLowerCase();
       const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
