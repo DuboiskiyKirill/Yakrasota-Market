@@ -275,137 +275,79 @@
         });
     }
 
-    function renderProducts(list) {
+function renderProducts(products) {
       productGrid.innerHTML = "";
-      list.forEach(p => {
+      products.forEach(p => {
         const card = document.createElement("div");
-        card.classList.add("product-card");
-
-        const hasShades = p.category.toLowerCase() === "краска" && Array.isArray(p.shades) && p.shades.length;
-        const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
-
+        card.className = "product-card";
         card.innerHTML = `
           <img src="${p.image}" alt="${p.name}">
           <div class="product-price">${p.price} ₽</div>
           <div class="product-name">${p.name}</div>
-          ${hasShades ? `
-            <button class="select-shades-btn"
-                    data-name="${p.name}"
-                    data-shades="${encodedShades}">
-              Выбрать оттенки
-            </button>` : ""
-          }
+          <button class="select-shades-btn" data-shades='${JSON.stringify(p.shades)}'>Выбрать оттенки</button>
           <button class="order-btn">Заказать</button>
         `;
         productGrid.appendChild(card);
       });
-
-      shadePicker.innerHTML = shades.map(s => `
-  <div class="shade-line" data-shade="${s}">
-    <label>
-      <input type="checkbox" class="shade-check">
-      <span>${s}</span>
-    </label>
-    <div class="qty-wrapper">
-      <button class="qty-btn minus" disabled>-</button>
-      <span class="qty-count">1</span>
-      <button class="qty-btn plus" disabled>+</button>
-    </div>
-  </div>
-`).join("");
-      
     }
 
-      
-
-    searchInput.addEventListener("input", function() {
-      const q = searchInput.value.toLowerCase();
-      const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
-      renderProducts(filtered);
-    });
-
-    function goBack() {
-      window.history.back();
-    }
-
-    document.addEventListener("click", function (e) {
+    document.addEventListener("click", function(e) {
       if (e.target.classList.contains("select-shades-btn")) {
-        const btn = e.target;
-        const productName = btn.getAttribute("data-name");
-        const shades = JSON.parse(decodeURIComponent(btn.getAttribute("data-shades")));
-        const shadePicker = document.getElementById("shadePicker");
+        const shades = JSON.parse(e.target.getAttribute("data-shades"));
         shadePicker.innerHTML = shades.map(s => `
-          <label>
-            <input type="checkbox" value="${s}"> ${s}
-          </label>
+          <div class="shade-line" data-shade="${s}">
+            <label>
+              <input type="checkbox" class="shade-check">
+              <span>${s}</span>
+            </label>
+            <div class="qty-wrapper">
+              <button class="qty-btn minus" disabled>-</button>
+              <span class="qty-count">1</span>
+              <button class="qty-btn plus" disabled>+</button>
+            </div>
+          </div>
         `).join("");
-        document.getElementById("shadeModal").style.display = "block";
-        shadePicker.setAttribute("data-product", productName);
+        shadeModal.style.display = "flex";
       }
     });
 
-    document.querySelector(".close").onclick = () => {
-      document.getElementById("shadeModal").style.display = "none";
-    };
+    document.addEventListener("change", function(e) {
+      if (e.target.classList.contains("shade-check")) {
+        const parent = e.target.closest(".shade-line");
+        parent.querySelector(".minus").disabled = !e.target.checked;
+        parent.querySelector(".plus").disabled = !e.target.checked;
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      if (e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
+        const parent = e.target.closest(".shade-line");
+        const qty = parent.querySelector(".qty-count");
+        let count = parseInt(qty.textContent);
+        if (e.target.classList.contains("plus")) count++;
+        if (e.target.classList.contains("minus") && count > 1) count--;
+        qty.textContent = count;
+      }
+    });
 
     document.getElementById("confirmShade").onclick = () => {
-      const selected = [...document.querySelectorAll('#shadePicker input:checked')].map(i => i.value);
+      const selected = [...document.querySelectorAll('.shade-line')].map(line => {
+        if (!line.querySelector(".shade-check").checked) return null;
+        return {
+          shade: line.dataset.shade,
+          qty: parseInt(line.querySelector(".qty-count").textContent)
+        };
+      }).filter(Boolean);
       console.log("Выбраны оттенки:", selected);
-      document.getElementById("shadeModal").style.display = "none";
+      shadeModal.style.display = "none";
     };
 
-
-// Обработка клика по чекбоксу
-document.addEventListener("change", function(e) {
-  if (e.target.classList.contains("shade-check")) {
-    const container = e.target.closest(".shade-line");
-    const minus = container.querySelector(".minus");
-    const plus = container.querySelector(".plus");
-    const qty = container.querySelector(".qty-count");
-
-    if (e.target.checked) {
-      plus.disabled = false;
-      minus.disabled = false;
-    } else {
-      plus.disabled = true;
-      minus.disabled = true;
-      qty.textContent = "1";
-    }
-  }
-});
-
-// +/- обработка
-document.addEventListener("click", function(e) {
-  if (e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
-    const container = e.target.closest(".shade-line");
-    const qty = container.querySelector(".qty-count");
-    let count = parseInt(qty.textContent);
-
-    if (e.target.classList.contains("plus")) count++;
-    if (e.target.classList.contains("minus") && count > 1) count--;
-
-    qty.textContent = count;
-  }
-});
-
-// Сбор выбранных оттенков
-document.getElementById("confirmShade").onclick = () => {
-  const selected = [...document.querySelectorAll('.shade-line')].map(line => {
-    const checked = line.querySelector(".shade-check").checked;
-    if (!checked) return null;
-
-    return {
-      shade: line.getAttribute("data-shade"),
-      qty: parseInt(line.querySelector(".qty-count").textContent)
+    document.getElementById("closeShade").onclick = () => {
+      shadeModal.style.display = "none";
     };
-  }).filter(Boolean);
 
-  console.log("Выбраны оттенки:", selected); // отправка в корзину
-
-  document.getElementById("shadeModal").style.display = "none";
-};
-
-      
+    renderProducts(products);
+       
   </script>
 </body>
 </html>
