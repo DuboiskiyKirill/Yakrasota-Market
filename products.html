@@ -91,145 +91,75 @@
       text-align: center;
       color: black;
     }
-   .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  padding-top: 80px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  animation: fadeIn 0.3s ease-out;
-}
-
-.modal.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: auto;
-  padding: 25px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 420px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.3s ease-out;
-  text-align: center;
-}
-
-@keyframes slideIn {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.shade-picker {
-  max-height: 200px;
-  overflow-y: auto;
-  margin: 15px 0;
-  text-align: left;
-}
-
-.shade-picker input[type="checkbox"] {
-  accent-color: #ff4081;
-}
-
-.shade-picker label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-  color: black;
-  font-size: 15px;
-}
-
-.shade-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  color: black;
-  margin-bottom: 10px;
-}
-
-.shade-line label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.qty-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.qty-btn {
-  background: #ff4081;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  line-height: 1;
-}
-
-.qty-count {
-  min-width: 24px;
-  text-align: center;
-  display: inline-block;
-  font-size: 14px;
-}
-
-.confirm-btn, .cancel-btn {
-  background: #ff4081;
-  border: none;
-  padding: 10px 20px;
-  color: white;
-  font-weight: bold;
-  border-radius: 10px;
-  cursor: pointer;
-  margin: 10px 5px 0;
-  font-size: 14px;
-}
-
-.select-shades-btn {
-  background: #e0e0e0;
-  color: #333;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  margin-bottom: 5px;
-  cursor: pointer;
-}
-
-.order-btn {
-  background: #ff4081;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  width: 90%;
-  margin-top: auto;
-  transition: background 0.3s;
-}
-
-.order-btn:hover {
-  background: #e91e63;
-}
-
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      padding-top: 100px;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .shade-picker {
+      max-height: 150px;
+      overflow-y: auto;
+      margin: 15px 0;
+      text-align: left;
+    }
+    .shade-picker input[type="checkbox"] {
+      accent-color: #21cf11; /* настраиваем цвет галочки */
+    }
+    .shade-picker span {
+      color: black; /* на всякий случай, если ты обернешь текст в <span> */
+    }
+    .shade-picker label {
+      color: black;
+      display: block;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .confirm-btn {
+      background: #ff4081;
+      border: none;
+      padding: 10px 20px;
+      color: black;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .select-shades-btn {
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .order-btn {
+      background: #ff4081;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 90%;
+      margin-top: auto;
+      transition: background 0.3s;
+    }
+    .order-btn:hover {
+      background: #e91e63;
+    }
     @media (max-width: 1024px) {
       #productGrid {
         grid-template-columns: repeat(3, 1fr);
@@ -255,20 +185,16 @@
   </div>
   <div id="productGrid">Загрузка...</div>
 
-  <!-- Модальное окно выбора оттенков -->
-<div id="shadeModal" class="modal fade-in">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h3>🎨 Выберите оттенок</h3>
-    <div id="shadePicker" class="shade-picker"></div>
-    <div class="modal-buttons">
-      <button id="cancelShade" class="cancel-btn">Назад</button>
+  <div id="shadeModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Выберите оттенок</h3>
+      <div id="shadePicker" class="shade-picker"></div>
       <button id="confirmShade" class="confirm-btn">Выбрать</button>
     </div>
   </div>
-</div>
 
-    <script>
+  <script>
     const params = new URLSearchParams(window.location.search);
     const selectedBrand = params.get("brand");
     const selectedCategory = params.get("category");
@@ -297,139 +223,67 @@
         });
     }
 
-function renderProducts(products) {
+    function renderProducts(list) {
       productGrid.innerHTML = "";
-      products.forEach(p => {
+      list.forEach(p => {
         const card = document.createElement("div");
-        card.className = "product-card";
+        card.classList.add("product-card");
+
+        const hasShades = p.category.toLowerCase() === "краска" && Array.isArray(p.shades) && p.shades.length;
+        const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
+
         card.innerHTML = `
           <img src="${p.image}" alt="${p.name}">
           <div class="product-price">${p.price} ₽</div>
           <div class="product-name">${p.name}</div>
-          <button class="select-shades-btn" data-shades='${JSON.stringify(p.shades)}'>Выбрать оттенки</button>
+          ${hasShades ? `
+            <button class="select-shades-btn"
+                    data-name="${p.name}"
+                    data-shades="${encodedShades}">
+              Выбрать оттенки
+            </button>` : ""
+          }
           <button class="order-btn">Заказать</button>
         `;
         productGrid.appendChild(card);
       });
     }
 
-   document.addEventListener("click", function (e) {
-  // Открытие модального окна
-  if (e.target.classList.contains("select-shades-btn")) {
-    const btn = e.target;
-    const productName = btn.getAttribute("data-name");
-    const shades = JSON.parse(btn.getAttribute("data-shades"));
+    searchInput.addEventListener("input", function() {
+      const q = searchInput.value.toLowerCase();
+      const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
+      renderProducts(filtered);
+    });
 
-    const shadePicker = document.getElementById("shadePicker");
-    const shadeModal = document.getElementById("shadeModal");
+    function goBack() {
+      window.history.back();
+    }
 
-    shadePicker.innerHTML = shades.map((s) => `
-      <div class="shade-line">
-        <label>
-          🎨 <input type="checkbox" value="${s}" data-shade="${s}" />
-          <span>${s}</span>
-        </label>
-        <div class="qty-wrapper">
-          <button class="qty-btn minus" data-shade="${s}">➖</button>
-          <span class="qty-count" id="count-${s.replace('/', '-')}" data-shade="${s}">1</span>
-          <button class="qty-btn plus" data-shade="${s}">➕</button>
-        </div>
-      </div>
-    ).join("") + 
-      <button class="confirm-btn">Выбрать</button>
-      <button class="cancel-btn">Назад</button>
-    `;
-
-    shadeModal.classList.add("fade-in");
-    shadeModal.style.display = "block";
-
-    // Кол-во по умолчанию — 1
-    document.querySelectorAll('.qty-count').forEach(el => el.textContent = '1');
-  }
-
-  // Закрытие модального окна
-  if (e.target.classList.contains("cancel-btn")) {
-    document.getElementById("shadeModal").style.display = "none";
-  }
-
-  // Увеличение кол-ва
-  if (e.target.classList.contains("plus")) {
-    const shade = e.target.getAttribute("data-shade");
-    const countSpan = document.getElementById(`count-${shade.replace('/', '-')}`);
-    let count = parseInt(countSpan.textContent);
-    countSpan.textContent = count + 1;
-  }
-
-  // Уменьшение кол-ва
-  if (e.target.classList.contains("minus")) {
-    const shade = e.target.getAttribute("data-shade");
-    const countSpan = document.getElementById(`count-${shade.replace('/', '-')}`);
-    let count = parseInt(countSpan.textContent);
-    if (count > 1) countSpan.textContent = count - 1;
-  }
-
-  // Подтверждение выбора
-  if (e.target.classList.contains("confirm-btn")) {
-    const selected = Array.from(document.querySelectorAll(".shade-line"))
-      .map(line => {
-        const checkbox = line.querySelector("input[type='checkbox']");
-        const countSpan = line.querySelector(".qty-count");
-        if (checkbox.checked) {
-          return {
-            shade: checkbox.value,
-            count: parseInt(countSpan.textContent)
-          };
-        }
-        return null;
-      })
-      .filter(Boolean);
-
-    // ⚠️ Здесь можно добавить отправку в корзину
-    console.log("Выбранные оттенки:", selected);
-
-    // Закрыть окно
-    document.getElementById("shadeModal").style.display = "none";
-  }
-});
-
-
-    document.addEventListener("change", function(e) {
-      if (e.target.classList.contains("shade-check")) {
-        const parent = e.target.closest(".shade-line");
-        parent.querySelector(".minus").disabled = !e.target.checked;
-        parent.querySelector(".plus").disabled = !e.target.checked;
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("select-shades-btn")) {
+        const btn = e.target;
+        const productName = btn.getAttribute("data-name");
+        const shades = JSON.parse(decodeURIComponent(btn.getAttribute("data-shades")));
+        const shadePicker = document.getElementById("shadePicker");
+        shadePicker.innerHTML = shades.map(s => `
+          <label>
+            <input type="checkbox" value="${s}"> ${s}
+          </label>
+        `).join("");
+        document.getElementById("shadeModal").style.display = "block";
+        shadePicker.setAttribute("data-product", productName);
       }
     });
 
-    document.addEventListener("click", function(e) {
-      if (e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
-        const parent = e.target.closest(".shade-line");
-        const qty = parent.querySelector(".qty-count");
-        let count = parseInt(qty.textContent);
-        if (e.target.classList.contains("plus")) count++;
-        if (e.target.classList.contains("minus") && count > 1) count--;
-        qty.textContent = count;
-      }
-    });
+    document.querySelector(".close").onclick = () => {
+      document.getElementById("shadeModal").style.display = "none";
+    };
 
     document.getElementById("confirmShade").onclick = () => {
-      const selected = [...document.querySelectorAll('.shade-line')].map(line => {
-        if (!line.querySelector(".shade-check").checked) return null;
-        return {
-          shade: line.dataset.shade,
-          qty: parseInt(line.querySelector(".qty-count").textContent)
-        };
-      }).filter(Boolean);
+      const selected = [...document.querySelectorAll('#shadePicker input:checked')].map(i => i.value);
       console.log("Выбраны оттенки:", selected);
-      shadeModal.style.display = "none";
+      document.getElementById("shadeModal").style.display = "none";
     };
-
-    document.getElementById("closeShade").onclick = () => {
-      shadeModal.style.display = "none";
-    };
-
-    renderProducts(products);
-       
   </script>
 </body>
 </html>
