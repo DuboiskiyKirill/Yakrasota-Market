@@ -159,15 +159,29 @@
     const shadeModal = document.getElementById("shadeModal");
     const shadePicker = document.getElementById("shadePicker");
     const searchInput = document.getElementById("searchInput");
+    let allProducts = [];
 
-    const products = [
-      {
-        name: "Краска TIGI для волос",
-        image: "https://via.placeholder.com/200x300.png?text=Краска",
-        price: "1500",
-        shades: ["1.0 Черный", "3.0 Темный шатен"]
-      }
-    ];
+    if (!selectedBrand || !selectedCategory) {
+      productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
+    } else {
+      const jsonFile = `data/${selectedBrand.toLowerCase()}.json`;
+      fetch(jsonFile)
+        .then(res => res.json())
+        .then(data => {
+          allProducts = data.filter(p =>
+            p.category.trim().toLowerCase() === selectedCategory.trim().toLowerCase()
+          );
+          if (allProducts.length === 0) {
+            productGrid.innerHTML = "<p style='color:white;'>❌ Нет товаров</p>";
+          } else {
+            renderProducts(allProducts);
+          }
+        })
+        .catch(err => {
+          productGrid.innerHTML = "<p style='color:white;'>Ошибка загрузки товаров</p>";
+        });
+    }
+
 
     function renderProducts(products) {
       productGrid.innerHTML = "";
