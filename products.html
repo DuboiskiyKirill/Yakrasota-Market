@@ -19,7 +19,7 @@
       margin: 20px 0 10px;
       font-size: 26px;
     }
-     h3 {
+    h3 {
       color: black;
       margin: 5px;
       font-size: 16px;
@@ -91,7 +91,6 @@
       text-align: center;
       color: black;
     }
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -162,28 +161,87 @@
   <h1>Товары</h1>
   <div class="search-container">
     <button class="back-btn" onclick="goBack()">← Назад</button>
-    <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию..." />
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию...">
   </div>
   <div id="productGrid">Загрузка...</div>
 
-<!-- Modal -->
-<div id="shadeModal" class="modal">
-  <div class="modal-content">
-    <h3>Выберите оттенки</h3>
-    <div id="shadePicker"></div>
-    <div style="text-align: right; margin-top: 10px;">
-      <button onclick="closeModal()">Назад</button>
-      <button onclick="confirmShades()">Выбрать</button>
+  <div id="shadeModal" class="modal">
+    <div class="modal-content">
+      <h3>Выберите оттенки</h3>
+      <div id="shadePicker"></div>
+      <div style="text-align: right; margin-top: 10px;">
+        <button onclick="closeModal()">Назад</button>
+        <button onclick="confirmShades()">Выбрать</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-const goBack = () => window.history.back();
-const productGrid = document.getElementById("productGrid");
-const searchInput = document.getElementById("searchInput");
-const shadeModal = document.getElementById("shadeModal");
-const shadePicker = document.getElementById("shadePicker");
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const selectedBrand = params.get("brand");
+    const selectedCategory = params.get("category");
+    const productGrid = document.getElementById("productGrid");
+    const searchInput = document.getElementById("searchInput");
+    const shadeModal = document.getElementById("shadeModal");
+    const shadePicker = document.getElementById("shadePicker");
+    let allProducts = [];
+
+    function goBack() {
+      window.history.back();
+    }
+
+    function renderProducts(products) {
+      productGrid.innerHTML = "";
+      products.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <div class="product-price">${p.price} ₽</div>
+          <div class="product-name">${p.name}</div>
+          <button class="select-shades-btn" onclick='openModal(${JSON.stringify(p.shades)})'>Выбрать оттенки</button>
+          <button class="order-btn">Заказать</button>
+        `;
+        productGrid.appendChild(card);
+      });
+    }
+
+    function openModal(shades) {
+      shadePicker.innerHTML = "";
+      shades.forEach(s => {
+        shadePicker.innerHTML += `
+          <div class="shade-line">
+            <span>${s}</span>
+            <div class="qty-wrapper">
+              <button class="qty-btn" onclick="adjustQty('${s}', -1)">-</button>
+              <span id="qty-${s}" class="qty-count">1</span>
+              <button class="qty-btn" onclick="adjustQty('${s}', 1)">+</button>
+            </div>
+          </div>`;
+      });
+      shadeModal.style.display = "block";
+    }
+
+    function closeModal() {
+      shadeModal.style.display = "none";
+    }
+
+    function adjustQty(shade, delta) {
+      const el = document.getElementById(`qty-${shade}`);
+      let count = parseInt(el.textContent);
+      count = Math.max(1, count + delta);
+      el.textContent = count;
+    }
+
+    function confirmShades() {
+      const selected = Array.from(document.querySelectorAll(".shade-line")).map(line => {
+        const shade = line.querySelector("span").textContent;
+        const qty = line.querySelector(".qty-count").textContent;
+        return { shade, qty };
+      });
+      console.log("Выбраны:", selected);
+      closeModal();
+    }
 
     if (!selectedBrand || !selectedCategory) {
       productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
@@ -205,68 +263,6 @@ const shadePicker = document.getElementById("shadePicker");
           productGrid.innerHTML = "<p style='color:white;'>Ошибка загрузки товаров</p>";
         });
     }
-
-    function renderProducts(list) {
-      productGrid.innerHTML = "";
-      list.forEach(p => {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
-
-        const hasShades = p.category.toLowerCase() === "краска" && Array.isArray(p.shades) && p.shades.length;
-        const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
-
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.name}">
-          <div class="product-price">${p.price} ₽</div>
-          <div class="product-name">${p.name}</div>
-          ${hasShades ? `
-            <button class="select-shades-btn"
-                    data-name="${p.name}"
-                    data-shades="${encodedShades}">
-              Выбрать оттенки
-            </button>` : ""
-          }
-          <button class="order-btn">Заказать</button>
-        `;
-        productGrid.appendChild(card);
-      });
-    }
-
-    searchInput.addEventListener("input", function() {
-      const q = searchInput.value.toLowerCase();
-      const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
-      renderProducts(filtered);
-    });
-
-    function goBack() {
-      window.history.back();
-    }
-
-    document.addEventListener("click", function (e) {
-      if (e.target.classList.contains("select-shades-btn")) {
-        const btn = e.target;
-        const productName = btn.getAttribute("data-name");
-        const shades = JSON.parse(decodeURIComponent(btn.getAttribute("data-shades")));
-        const shadePicker = document.getElementById("shadePicker");
-        shadePicker.innerHTML = shades.map(s => `
-          <label>
-            <input type="checkbox" value="${s}"> ${s}
-          </label>
-        `).join("");
-        document.getElementById("shadeModal").style.display = "block";
-        shadePicker.setAttribute("data-product", productName);
-      }
-    });
-
-    document.querySelector(".close").onclick = () => {
-      document.getElementById("shadeModal").style.display = "none";
-    };
-
-    document.getElementById("confirmShade").onclick = () => {
-      const selected = [...document.querySelectorAll('#shadePicker input:checked')].map(i => i.value);
-      console.log("Выбраны оттенки:", selected);
-      document.getElementById("shadeModal").style.display = "none";
-    };
   </script>
 </body>
 </html>
