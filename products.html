@@ -95,104 +95,148 @@
       display: none;
       position: fixed;
       z-index: 1000;
-      padding-top: 100px;
-      left: 0; top: 0;
+      top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s ease-out;
     }
+
+    .modal.fade-in {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     .modal-content {
       background-color: #fff;
-      margin: auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 80%;
+      margin: 80px auto;
+      padding: 25px;
+      border-radius: 16px;
+      width: 90%;
       max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      animation: slideIn 0.3s ease-out;
       text-align: center;
     }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
     .shade-picker {
-      max-height: 150px;
+      max-height: 200px;
       overflow-y: auto;
       margin: 15px 0;
       text-align: left;
     }
-    .shade-picker input[type="checkbox"] {
-      accent-color: #ff4081; /* настраиваем цвет галочки */
-    }
-    .shade-picker span {
-      color: black; /* на всякий случай, если ты обернешь текст в <span> */
-    }
-    .shade-picker label {
-      color: black;
-      display: block;
-      padding: 8px;
+
+    .shade-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
       border-bottom: 1px solid #eee;
     }
-    .confirm-btn {
+
+    .shade-line label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .qty-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #ccc;
+      border-radius: 16px;
+      padding: 4px 8px;
+      background: #f1f1f1;
+    }
+
+    .qty-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .qty-count {
+      min-width: 24px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .modal-buttons {
+      margin-top: 20px;
+    }
+
+    .confirm-btn, .cancel-btn {
       background: #ff4081;
       border: none;
       padding: 10px 20px;
-      color: black;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .select-shades-btn {
-      background: #e0e0e0;
-      color: #333;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 14px;
-      margin-bottom: 5px;
-    }
-    .order-btn {
-      background: #ff4081;
       color: white;
-      border: none;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
+      font-weight: bold;
+      border-radius: 10px;
       cursor: pointer;
-      width: 90%;
-      margin-top: auto;
-      transition: background 0.3s;
+      margin: 5px;
+      font-size: 14px;
     }
-    .order-btn:hover {
-      background: #e91e63;
-    }
-    @media (max-width: 1024px) {
-      #productGrid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-    @media (max-width: 768px) {
-      #productGrid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-    @media (max-width: 480px) {
-      #productGrid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <h1>Товары</h1>
-  <div class="search-container">
-    <button class="back-btn" onclick="goBack()">← Назад</button>
-    <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию..." />
-  </div>
-  <div id="productGrid">Загрузка...</div>
 
-  <div id="shadeModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h3>Выберите оттенок</h3>
-      <div id="shadePicker" class="shade-picker"></div>
-      <button id="confirmShade" class="confirm-btn">Выбрать</button>
+<!-- Модальное окно выбора оттенков -->
+<div id="shadeModal" class="modal fade-in">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('shadeModal').style.display='none'">&times;</span>
+    <h3>🎨 Выберите оттенок</h3>
+    <div id="shadePicker" class="shade-picker">
+      <div class="shade-line">
+        <label>
+          <input type="checkbox" value="1.0" />
+          <span>1.0 Черный</span>
+        </label>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">➖</button>
+          <span class="qty-count">1</span>
+          <button class="qty-btn plus">➕</button>
+        </div>
+      </div>
+      <div class="shade-line">
+        <label>
+          <input type="checkbox" value="3.0" />
+          <span>3.0 Темный шатен</span>
+        </label>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">➖</button>
+          <span class="qty-count">1</span>
+          <button class="qty-btn plus">➕</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="cancel-btn" onclick="document.getElementById('shadeModal').style.display='none'">Назад</button>
+      <button class="confirm-btn">Выбрать</button>
     </div>
   </div>
+</div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -259,21 +303,15 @@
       window.history.back();
     }
 
-    document.addEventListener("click", function (e) {
-      if (e.target.classList.contains("select-shades-btn")) {
-        const btn = e.target;
-        const productName = btn.getAttribute("data-name");
-        const shades = JSON.parse(decodeURIComponent(btn.getAttribute("data-shades")));
-        const shadePicker = document.getElementById("shadePicker");
-        shadePicker.innerHTML = shades.map(s => `
-          <label>
-            <input type="checkbox" value="${s}"> ${s}
-          </label>
-        `).join("");
-        document.getElementById("shadeModal").style.display = "block";
-        shadePicker.setAttribute("data-product", productName);
-      }
-    });
+  document.addEventListener("click", function(e) {
+    if (e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
+      const qty = e.target.parentElement.querySelector(".qty-count");
+      let count = parseInt(qty.textContent);
+      if (e.target.classList.contains("plus")) count++;
+      if (e.target.classList.contains("minus") && count > 1) count--;
+      qty.textContent = count;
+    }
+  });
 
     document.querySelector(".close").onclick = () => {
       document.getElementById("shadeModal").style.display = "none";
