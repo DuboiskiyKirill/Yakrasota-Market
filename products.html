@@ -91,74 +91,55 @@
       text-align: center;
       color: black;
     }
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
       z-index: 1000;
-      padding-top: 100px;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: auto;
     }
     .modal-content {
       background-color: #fff;
-      margin: auto;
+      margin: 10% auto;
       padding: 20px;
-      border-radius: 8px;
-      width: 80%;
+      border-radius: 12px;
+      width: 90%;
       max-width: 400px;
-      text-align: center;
-    }
-    .shade-picker {
-      max-height: 150px;
-      overflow-y: auto;
-      margin: 15px 0;
       text-align: left;
+      animation: fadeIn 0.3s ease-in-out;
     }
-    .shade-picker input[type="checkbox"] {
-      accent-color: #21cf11; /* настраиваем цвет галочки */
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-10px);}
+      to {opacity: 1; transform: translateY(0);}
     }
-    .shade-picker span {
-      color: black; /* на всякий случай, если ты обернешь текст в <span> */
+    .shade-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
-    .shade-picker label {
-      color: black;
-      display: block;
-      padding: 8px;
-      border-bottom: 1px solid #eee;
+    .qty-wrapper {
+      display: flex;
+      gap: 5px;
+      align-items: center;
     }
-    .confirm-btn {
-      background: #ff4081;
-      border: none;
-      padding: 10px 20px;
-      color: black;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .select-shades-btn {
-      background: #e0e0e0;
-      color: #333;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 14px;
-      margin-bottom: 5px;
-    }
-    .order-btn {
+    .qty-btn {
       background: #ff4081;
       color: white;
       border: none;
-      padding: 12px;
-      font-size: 16px;
       border-radius: 8px;
-      cursor: pointer;
-      width: 90%;
-      margin-top: auto;
-      transition: background 0.3s;
+      padding: 4px 10px;
+      font-size: 14px;
     }
-    .order-btn:hover {
-      background: #e91e63;
+    .qty-count {
+      min-width: 20px;
+      text-align: center;
+      font-size: 14px;
     }
     @media (max-width: 1024px) {
       #productGrid {
@@ -185,22 +166,24 @@
   </div>
   <div id="productGrid">Загрузка...</div>
 
-  <div id="shadeModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h3>Выберите оттенок</h3>
-      <div id="shadePicker" class="shade-picker"></div>
-      <button id="confirmShade" class="confirm-btn">Выбрать</button>
+<!-- Modal -->
+<div id="shadeModal" class="modal">
+  <div class="modal-content">
+    <h3>Выберите оттенки</h3>
+    <div id="shadePicker"></div>
+    <div style="text-align: right; margin-top: 10px;">
+      <button onclick="closeModal()">Назад</button>
+      <button onclick="confirmShades()">Выбрать</button>
     </div>
   </div>
+</div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const selectedBrand = params.get("brand");
-    const selectedCategory = params.get("category");
-    const productGrid = document.getElementById("productGrid");
-    const searchInput = document.getElementById("searchInput");
-    let allProducts = [];
+<script>
+const goBack = () => window.history.back();
+const productGrid = document.getElementById("productGrid");
+const searchInput = document.getElementById("searchInput");
+const shadeModal = document.getElementById("shadeModal");
+const shadePicker = document.getElementById("shadePicker");
 
     if (!selectedBrand || !selectedCategory) {
       productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
