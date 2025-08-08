@@ -185,37 +185,36 @@
 
 
     function renderProducts(products) {
-      productGrid.innerHTML = "";
-      products.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.name}">
-          <div class="product-price">${p.price} ₽</div>
-          <div class="product-name">${p.name}</div>
-          <button class="select-shades-btn" onclick='openModal(${JSON.stringify(p.shades)}, "${p.name}")'>Выбрать оттенки</button>
-        `;
-        productGrid.appendChild(card);
-      });
-    }
+  productGrid.innerHTML = "";
+  products.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" />
+      <div class="product-price">${p.price} ₽</div>
+      <div class="product-name">${p.name}</div>
+      <button class="select-shades-btn" onclick='openModal(${JSON.stringify(p.shades)})'>Выбрать оттенки</button>
+    `;
+    productGrid.appendChild(card);
+  });
+}
 
-    function openModal(shades, productName) {
-      shadePicker.innerHTML = "";
-      shadeModal.dataset.product = productName;
-      shades.forEach((shade, index) => {
-        const safeId = `shade-${index}`;
-        shadePicker.innerHTML += `
-          <div class="shade-item">
-            <label><input type="checkbox" id="${safeId}" value="${shade}" /> ${shade}</label>
-            <div class="qty-wrapper">
-              <button class="qty-btn" onclick="adjustQty('${safeId}', -1)">−</button>
-              <span class="qty-count" id="qty-${safeId}">1</span>
-              <button class="qty-btn" onclick="adjustQty('${safeId}', 1)">+</button>
-            </div>
-          </div>`;
-      });
-      shadeModal.style.display = "flex";
-    }
+    function openModal(shades) {
+  shadePicker.innerHTML = "";
+  shades.forEach((shade, index) => {
+    shadePicker.innerHTML += `
+      <div class="shade-item">
+        <label><input type="checkbox" value="${shade}" /> ${shade}</label>
+        <div class="qty-wrapper">
+          <button class="qty-btn" onclick="adjustQty(${index}, -1)">−</button>
+          <span id="qty-${index}" class="qty-count">1</span>
+          <button class="qty-btn" onclick="adjustQty(${index}, 1)">+</button>
+        </div>
+      </div>
+    `;
+  });
+  shadeModal.style.display = "block";
+}
 
     function closeModal() {
       shadeModal.style.display = "none";
