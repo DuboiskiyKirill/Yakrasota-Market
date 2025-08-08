@@ -217,7 +217,7 @@
         const card = document.createElement("div");
         card.classList.add("product-card");
 
-        const hasShades = p.category.toLowerCase() === "Краска" && Array.isArray(p.shades) && p.shades.length;
+        const hasShades = p.category.toLowerCase() === "краска" && Array.isArray(p.shades) && p.shades.length;
         const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
 
         card.innerHTML = `
