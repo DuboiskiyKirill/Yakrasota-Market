@@ -12,11 +12,17 @@
       margin: 0;
       padding: 0;
       color: white;
+      position: relative;
     }
     h1 {
       color: white;
       margin: 20px 0 10px;
       font-size: 26px;
+    }
+     h3 {
+      color: black;
+      margin: 5px;
+      font-size: 16px;
     }
     .search-container {
       display: flex;
@@ -41,9 +47,12 @@
       font-size: 16px;
       outline: none;
     }
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
     #productGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 15px;
       justify-content: center;
       padding: 10px;
@@ -54,6 +63,7 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -76,164 +86,350 @@
     }
     .product-name {
       font-size: 16px;
-      color: black;
+      font-weight: normal;
       margin: 0 8px 10px;
-    }
-    .select-shades-btn, .order-btn {
-      background: #ff4081;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      margin: 5px 0;
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      overflow: auto;
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
-      text-align: left;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(-10px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-    .shade-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .qty-wrapper {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-    }
-    .qty-btn {
-      background: #ff4081;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-size: 14px;
-    }
-    .qty-count {
-      min-width: 20px;
       text-align: center;
-      font-size: 14px;
+      color: black;
+    }
+   .modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 80px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 25px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-out;
+  text-align: center;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.shade-picker {
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 15px 0;
+  text-align: left;
+}
+
+.shade-picker input[type="checkbox"] {
+  accent-color: #ff4081;
+}
+
+.shade-picker label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  color: black;
+  font-size: 15px;
+}
+
+.shade-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: black;
+  margin-bottom: 10px;
+}
+
+.shade-line label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qty-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qty-btn {
+  background: #ff4081;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.qty-count {
+  min-width: 24px;
+  text-align: center;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.confirm-btn, .cancel-btn {
+  background: #ff4081;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 10px 5px 0;
+  font-size: 14px;
+}
+
+.select-shades-btn {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.order-btn {
+  background: #ff4081;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 90%;
+  margin-top: auto;
+  transition: background 0.3s;
+}
+
+.order-btn:hover {
+  background: #e91e63;
+}
+
+    @media (max-width: 1024px) {
+      #productGrid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      #productGrid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 480px) {
+      #productGrid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
 <body>
+  <h1>Товары</h1>
+  <div class="search-container">
+    <button class="back-btn" onclick="goBack()">← Назад</button>
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию..." />
+  </div>
+  <div id="productGrid">Загрузка...</div>
 
-<h1>Товары</h1>
-<div class="search-container">
-  <button class="back-btn" onclick="goBack()">← Назад</button>
-  <input type="text" class="search-input" id="searchInput" placeholder="Поиск товара по названию...">
-</div>
-<div id="productGrid">Загрузка...</div>
-
-<!-- Modal -->
-<div id="shadeModal" class="modal">
+  <!-- Модальное окно выбора оттенков -->
+<div id="shadeModal" class="modal fade-in">
   <div class="modal-content">
-    <h3>Выберите оттенки</h3>
-    <div id="shadePicker"></div>
-    <div style="text-align: right; margin-top: 10px;">
-      <button onclick="closeModal()">Назад</button>
-      <button onclick="confirmShades()">Выбрать</button>
+    <span class="close">&times;</span>
+    <h3>🎨 Выберите оттенок</h3>
+    <div id="shadePicker" class="shade-picker"></div>
+    <div class="modal-buttons">
+      <button id="cancelShade" class="cancel-btn">Назад</button>
+      <button id="confirmShade" class="confirm-btn">Выбрать</button>
     </div>
   </div>
 </div>
 
-<script>
-const goBack = () => window.history.back();
-const productGrid = document.getElementById("productGrid");
-const searchInput = document.getElementById("searchInput");
-const shadeModal = document.getElementById("shadeModal");
-const shadePicker = document.getElementById("shadePicker");
+    <script>
+    const params = new URLSearchParams(window.location.search);
+    const selectedBrand = params.get("brand");
+    const selectedCategory = params.get("category");
+    const productGrid = document.getElementById("productGrid");
+    const searchInput = document.getElementById("searchInput");
+    let allProducts = [];
 
-// DEMO PRODUCT LOADER
-const products = [
-  {
-    name: "Краска Londa",
-    price: "350",
-    image: "https://via.placeholder.com/200x300?text=Londa",
-    shades: ["1.0", "2.0", "3.0"]
-  }
-];
+    if (!selectedBrand || !selectedCategory) {
+      productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
+    } else {
+      const jsonFile = `data/${selectedBrand.toLowerCase()}.json`;
+      fetch(jsonFile)
+        .then(res => res.json())
+        .then(data => {
+          allProducts = data.filter(p =>
+            p.category.trim().toLowerCase() === selectedCategory.trim().toLowerCase()
+          );
+          if (allProducts.length === 0) {
+            productGrid.innerHTML = "<p style='color:white;'>❌ Нет товаров</p>";
+          } else {
+            renderProducts(allProducts);
+          }
+        })
+        .catch(err => {
+          productGrid.innerHTML = "<p style='color:white;'>Ошибка загрузки товаров</p>";
+        });
+    }
 
 function renderProducts(products) {
-  productGrid.innerHTML = "";
-  products.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
-      <div class="product-price">${p.price} ₽</div>
-      <div class="product-name">${p.name}</div>
-      <button class="select-shades-btn" onclick='openModal(${JSON.stringify(p.shades)})'>Выбрать оттенки</button>
-      <button class="order-btn">Заказать</button>
-    `;
-    productGrid.appendChild(card);
-  });
-}
+      productGrid.innerHTML = "";
+      products.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <div class="product-price">${p.price} ₽</div>
+          <div class="product-name">${p.name}</div>
+          <button class="select-shades-btn" data-shades='${JSON.stringify(p.shades)}'>Выбрать оттенки</button>
+          <button class="order-btn">Заказать</button>
+        `;
+        productGrid.appendChild(card);
+      });
+    }
 
-function openModal(shades) {
-  shadePicker.innerHTML = "";
-  shades.forEach(s => {
-    shadePicker.innerHTML += `
+   document.addEventListener("click", function (e) {
+  // Открытие модального окна
+  if (e.target.classList.contains("select-shades-btn")) {
+    const btn = e.target;
+    const productName = btn.getAttribute("data-name");
+    const shades = JSON.parse(btn.getAttribute("data-shades"));
+
+    const shadePicker = document.getElementById("shadePicker");
+    const shadeModal = document.getElementById("shadeModal");
+
+    shadePicker.innerHTML = shades.map((s) => `
       <div class="shade-line">
-        <span>${s}</span>
+        <label>
+          🎨 <input type="checkbox" value="${s}" data-shade="${s}" />
+          <span>${s}</span>
+        </label>
         <div class="qty-wrapper">
-          <button class="qty-btn" onclick="adjustQty('${s}', -1)">-</button>
-          <span id="qty-${s}" class="qty-count">1</span>
-          <button class="qty-btn" onclick="adjustQty('${s}', 1)">+</button>
+          <button class="qty-btn minus" data-shade="${s}">➖</button>
+          <span class="qty-count" id="count-${s.replace('/', '-')}" data-shade="${s}">1</span>
+          <button class="qty-btn plus" data-shade="${s}">➕</button>
         </div>
-      </div>`;
-  });
-  shadeModal.style.display = "block";
-}
+      </div>
+    ).join("") + 
+      <button class="confirm-btn">Выбрать</button>
+      <button class="cancel-btn">Назад</button>
+    `;
 
-function closeModal() {
-  shadeModal.style.display = "none";
-}
+    shadeModal.classList.add("fade-in");
+    shadeModal.style.display = "block";
 
-function adjustQty(shade, delta) {
-  const el = document.getElementById(`qty-${shade}`);
-  let count = parseInt(el.textContent);
-  count = Math.max(1, count + delta);
-  el.textContent = count;
-}
+    // Кол-во по умолчанию — 1
+    document.querySelectorAll('.qty-count').forEach(el => el.textContent = '1');
+  }
 
-function confirmShades() {
-  const selected = Array.from(document.querySelectorAll(".shade-line")).map(line => {
-    const shade = line.querySelector("span").textContent;
-    const qty = line.querySelector(".qty-count").textContent;
-    return { shade, qty };
-  });
-  console.log("Выбраны:", selected);
-  closeModal();
-}
+  // Закрытие модального окна
+  if (e.target.classList.contains("cancel-btn")) {
+    document.getElementById("shadeModal").style.display = "none";
+  }
 
-renderProducts(products);
-</script>
+  // Увеличение кол-ва
+  if (e.target.classList.contains("plus")) {
+    const shade = e.target.getAttribute("data-shade");
+    const countSpan = document.getElementById(`count-${shade.replace('/', '-')}`);
+    let count = parseInt(countSpan.textContent);
+    countSpan.textContent = count + 1;
+  }
+
+  // Уменьшение кол-ва
+  if (e.target.classList.contains("minus")) {
+    const shade = e.target.getAttribute("data-shade");
+    const countSpan = document.getElementById(`count-${shade.replace('/', '-')}`);
+    let count = parseInt(countSpan.textContent);
+    if (count > 1) countSpan.textContent = count - 1;
+  }
+
+  // Подтверждение выбора
+  if (e.target.classList.contains("confirm-btn")) {
+    const selected = Array.from(document.querySelectorAll(".shade-line"))
+      .map(line => {
+        const checkbox = line.querySelector("input[type='checkbox']");
+        const countSpan = line.querySelector(".qty-count");
+        if (checkbox.checked) {
+          return {
+            shade: checkbox.value,
+            count: parseInt(countSpan.textContent)
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    // ⚠️ Здесь можно добавить отправку в корзину
+    console.log("Выбранные оттенки:", selected);
+
+    // Закрыть окно
+    document.getElementById("shadeModal").style.display = "none";
+  }
+});
+
+
+    document.addEventListener("change", function(e) {
+      if (e.target.classList.contains("shade-check")) {
+        const parent = e.target.closest(".shade-line");
+        parent.querySelector(".minus").disabled = !e.target.checked;
+        parent.querySelector(".plus").disabled = !e.target.checked;
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      if (e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
+        const parent = e.target.closest(".shade-line");
+        const qty = parent.querySelector(".qty-count");
+        let count = parseInt(qty.textContent);
+        if (e.target.classList.contains("plus")) count++;
+        if (e.target.classList.contains("minus") && count > 1) count--;
+        qty.textContent = count;
+      }
+    });
+
+    document.getElementById("confirmShade").onclick = () => {
+      const selected = [...document.querySelectorAll('.shade-line')].map(line => {
+        if (!line.querySelector(".shade-check").checked) return null;
+        return {
+          shade: line.dataset.shade,
+          qty: parseInt(line.querySelector(".qty-count").textContent)
+        };
+      }).filter(Boolean);
+      console.log("Выбраны оттенки:", selected);
+      shadeModal.style.display = "none";
+    };
+
+    document.getElementById("closeShade").onclick = () => {
+      shadeModal.style.display = "none";
+    };
+
+    renderProducts(products);
+       
+  </script>
 </body>
 </html>
