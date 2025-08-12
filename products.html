@@ -170,24 +170,38 @@
   }
 
   // --- render cards (только кнопка «Выбрать оттенки»)
-  function renderProducts(list){
-    productGrid.innerHTML = "";
-    list.forEach(p => {
-      const hasShades = (p.category||"").toLowerCase() === "краска" && Array.isArray(p.shades) && p.shades.length;
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
-        <div class="product-price">${p.price} ₽</div>
-        <div class="product-name">${p.name}</div>
-        ${hasShades ? `<button type="button" class="select-shades-btn">Выбрать оттенки</button>` : ``}
-      `;
-      if (hasShades){
-        card.querySelector(".select-shades-btn").addEventListener("click", () => openModalFor(p));
-      }
-      productGrid.appendChild(card);
-    });
-  }
+function renderProducts(list) {
+  productGrid.innerHTML = "";
+  list.forEach(p => {
+    const isColor = (p.category || "").trim().toLowerCase() === "краска";
+    const hasShades = isColor && Array.isArray(p.shades) && p.shades.length > 0;
+    const card = document.createElement("div");
+    card.classList.add("product-card");
+
+    const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
+
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <div class="product-price">${p.price} ₽</div>
+      <div class="product-name">${p.name}</div>
+
+      ${hasShades ? `
+        <button class="select-shades-btn"
+                data-name="${p.name}"
+                data-shades="${encodedShades}">
+          Выбрать оттенки
+        </button>
+       : 
+        <button class="order-btn"
+                data-name="${p.name}"
+                data-price="${p.price}">
+          Заказать
+        </button>
+      `}
+    `;
+    productGrid.appendChild(card);
+  });
+}
 
   // --- search
   searchInput.addEventListener("input", () => {
