@@ -148,6 +148,60 @@
 </div
   
 <script>
+
+// ======= Модал выбора количества для НЕ "Краска"
+const qtyModal   = document.getElementById('qtyModal');
+const qtyMinus   = document.getElementById('qtyMinus');
+const qtyPlus    = document.getElementById('qtyPlus');
+const qtyCountEl = document.getElementById('qtyCount');
+const qtyCancel  = document.getElementById('qtyCancel');
+const qtyAdd     = document.getElementById('qtyAdd');
+
+let currentSimpleProduct = null;
+let currentQty = 1;
+
+function openQtyModal(product) {
+  currentSimpleProduct = product;
+  currentQty = 1;
+  qtyCountEl.textContent = '1';
+  qtyModal.style.display = 'block';
+}
+function closeQtyModal() {
+  qtyModal.style.display = 'none';
+}
+
+qtyMinus.addEventListener('click', () => {
+  currentQty = Math.max(1, currentQty - 1);
+  qtyCountEl.textContent = String(currentQty);
+});
+qtyPlus.addEventListener('click', () => {
+  currentQty += 1;
+  qtyCountEl.textContent = String(currentQty);
+});
+qtyCancel.addEventListener('click', closeQtyModal);
+
+qtyAdd.addEventListener('click', async () => {
+  const payload = {
+    type: 'simple',
+    name: currentSimpleProduct?.name,
+    price: currentSimpleProduct?.price,
+    qty: currentQty
+  };
+  console.log('В корзину (простая позиция):', payload);
+  closeQtyModal();
+});
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.order-btn');
+  if (!btn) return;
+  const product = {
+    name: btn.getAttribute('data-name'),
+    price: btn.getAttribute('data-price')
+  };
+  openQtyModal(product);
+});  
+
+  
   // --- URL params + elements
   const params = new URLSearchParams(window.location.search);
   const selectedBrand = params.get("brand");
