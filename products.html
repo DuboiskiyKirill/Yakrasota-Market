@@ -112,6 +112,22 @@
   </div>
 
   <div id="productGrid">Загрузка...</div>
+<!-- Модал выбора количества для НЕ "Краска" -->
+<div id="qtyModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3>Выберите количество</h3>
+    <div class="qty-wrapper" style="justify-content:center;margin:12px 0;">
+      <button type="button" class="qty-btn" id="qtyMinus">−</button>
+      <span class="qty-count" id="qtyCount">1</span>
+      <button type="button" class="qty-btn" id="qtyPlus">+</button>
+    </div>
+
+    <div class="modal-buttons" style="display:flex;gap:8px;justify-content:center;">
+      <button type="button" class="cancel-btn" id="qtyCancel">Назад</button>
+      <button type="button" class="confirm-btn" id="qtyAdd">Заказать</button>
+    </div>
+  </div>
+</div>  
 
   <!-- Модальное окно -->
   <div id="shadeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shadeTitle">
