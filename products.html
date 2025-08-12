@@ -269,7 +269,11 @@ document.addEventListener('click', (e) => {
           Заказать
         </button>
       `}
-    `;
+    `;// ← ВАЖНО: навешиваем клик
+const shadesBtn = card.querySelector('.select-shades-btn');
+if (shadesBtn) {
+  shadesBtn.addEventListener('click', () => openModalFor(p));
+}
     productGrid.appendChild(card);
   });
 }  
