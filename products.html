@@ -280,7 +280,8 @@
         const qty = parseInt(row.querySelector(".count").textContent,10) || 1;
         return { shade: cb.value, qty };
       })
-      .
+      .filter(Boolean);
+  });
       const qtyClose   = document.getElementById('qtyClose');
 
   let allProducts = [];
