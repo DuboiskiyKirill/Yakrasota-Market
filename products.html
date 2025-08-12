@@ -293,7 +293,7 @@
   if (!selectedBrand || !selectedCategory) {
     productGrid.innerHTML = "<p style='color:white;'>❌Бренд или категория не выбраны!</p>";
   } else {
-    const jsonFile = `data/${selectedBrand.toLowerCase()}.filter(Boolean);`
+    const jsonFile = `data/${selectedBrand.toLowerCase()}.filter(Boolean)`;
 
     if(!selected.length){ alert("Выберите хотя бы один оттенок"); return; }
 
