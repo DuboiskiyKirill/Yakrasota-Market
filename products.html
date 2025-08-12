@@ -217,6 +217,10 @@ function renderProducts(list) {
         <div class="qty">
           <button type="button" class="qty-minus" disabled>−</button>
           <span class="count">1</span>
+          <button type="button" class="qty-plus" disabled>+</button>
+          </div>
+        </div>
+        `).join("");
 card.innerHTML = `
   <img src="${p.image}" alt="${p.name}">
   <div class="product-price">${p.price} ₽</div>
