@@ -96,7 +96,113 @@
     .modal-footer{ display:flex; gap:10px; justify-content:center; padding:14px; border-top:1px solid #eee; }
     .btn{ border:0; padding:10px 18px; border-radius:12px; cursor:pointer; font-weight:700; }
     .btn-light{ background:#f2f3f7; color:#333; }
-    .<input class="shade-check" type="checkbox" value="${s}">
+    .btn-primary{ background:var(--pink); color:#fff; }
+
+    @media (max-width:1024px){ #productGrid{ grid-template-columns:repeat(3,1fr);} }
+    @media (max-width:768px){  #productGrid{ grid-template-columns:repeat(2,1fr);} }
+    @media (max-width:480px){  #productGrid{ grid-template-columns:repeat(2,1fr);} }
+  </style>
+</head>
+<body>
+  <h1>Товары</h1>
+
+  <div class="search-container">
+    <button class="back-btn" onclick="history.back()">← Назад</button>
+    <input type="text" id="searchInput" class="search-input" placeholder="Поиск товара по названию..." />
+  </div>
+
+  <div id="productGrid">Загрузка...</div>
+
+  <!-- Модальное окно -->
+  <div id="shadeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shadeTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span aria-hidden="true">🎨</span>
+        <span id="shadeTitle">Выберите оттенок</span>
+        <button type="button" id="modalClose" class="modal-close" aria-label="Закрыть">×</button>
+      </div>
+
+      <div id="shadePicker" class="picker"><!-- rows inject here --></div>
+
+      <div class="modal-footer">
+        <button type="button" id="btnBack" class="btn btn-light">Назад</button>
+        <button type="button" id="btnOrder" class="btn btn-primary">Заказать</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // --- URL params + elements
+  const params = new URLSearchParams(window.location.search);
+  const selectedBrand = params.get("brand");
+  const selectedCategory = params.get("category");
+
+  const productGrid = document.getElementById("productGrid");
+  const searchInput = document.getElementById("searchInput");
+
+  const shadeModal  = document.getElementById("shadeModal");
+  const shadePicker = document.getElementById("shadePicker");
+  const modalClose  = document.getElementById("modalClose");
+  const btnBack     = document.getElementById("btnBack");
+  const btnOrder    = document.getElementById("btnOrder");
+
+  let allProducts = [];
+  let currentProduct = null; // товар, для которого открыта модалка
+
+  // --- load data
+  if (!selectedBrand || !selectedCategory) {
+    productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
+  } else {
+    const jsonFile = data/${selectedBrand.toLowerCase()}.json;
+    fetch(jsonFile)
+      .then(res => res.json())
+      .then(data => {
+        allProducts = data.filter(p => (p.category||"").trim().toLowerCase() === selectedCategory.trim().toLowerCase());
+        if (!allProducts.length) {
+          productGrid.innerHTML = "<p style='color:white;'>❌ Нет товаров</p>";
+        } else {
+          renderProducts(allProducts);
+        }
+      })
+      .catch(() => {
+        productGrid.innerHTML = "<p style='color:white;'>Ошибка загрузки товаров</p>";
+      });
+  }
+
+  // --- render cards (только кнопка «Выбрать оттенки»)
+  function renderProducts(list){
+    productGrid.innerHTML = "";
+    list.forEach(p => {
+      const hasShades = (p.category||"").toLowerCase() === "краска" && Array.isArray(p.shades) && p.shades.length;
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <div class="product-price">${p.price} ₽</div>
+        <div class="product-name">${p.name}</div>
+        ${hasShades ? <button type="button" class="select-shades-btn">Выбрать оттенки</button> : ``}
+      `;
+      if (hasShades){
+        card.querySelector(".select-shades-btn").addEventListener("click", () => openModalFor(p));
+      }
+      productGrid.appendChild(card);
+    });
+  }
+
+  // --- search
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.toLowerCase();
+    renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(q)));
+  });
+
+  // --- open modal for product
+  function openModalFor(product){
+    currentProduct = product;
+    // наполняем строки оттенков
+    shadePicker.innerHTML = product.shades.map((s, i)=>`
+      <div class="shade-row" data-index="${i}">
+        <label>
+        <input class="shade-check" type="checkbox" value="${s}">
           <span>${s}</span>
         </label>
         <div class="qty">
