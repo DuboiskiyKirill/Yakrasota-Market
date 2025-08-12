@@ -310,6 +310,79 @@ function renderProducts(list) {
     }
     closeModal();
   });
+
+// ======= Модал выбора количества для НЕ "Краска"
+const qtyModal   = document.getElementById('qtyModal');
+const qtyMinus   = document.getElementById('qtyMinus');
+const qtyPlus    = document.getElementById('qtyPlus');
+const qtyCountEl = document.getElementById('qtyCount');
+const qtyCancel  = document.getElementById('qtyCancel');
+const qtyAdd     = document.getElementById('qtyAdd');
+
+let currentSimpleProduct = null; // {name, price}
+let currentQty = 1;
+
+function openQtyModal(product) {
+  currentSimpleProduct = product;
+  currentQty = 1;
+  qtyCountEl.textContent = '1';
+  qtyModal.style.display = 'block';
+}
+function closeQtyModal() {
+  qtyModal.style.display = 'none';
+}
+
+qtyMinus.addEventListener('click', () => {
+  currentQty = Math.max(1, currentQty - 1);
+  qtyCountEl.textContent = String(currentQty);
+});
+qtyPlus.addEventListener('click', () => {
+  currentQty += 1;
+  qtyCountEl.textContent = String(currentQty);
+});
+qtyCancel.addEventListener('click', closeQtyModal);
+
+// Отправка заказа в бота (заглушка — замени на свой токен/чат)
+qtyAdd.addEventListener('click', async () => {
+  const payload = {
+    type: 'simple',
+    name: currentSimpleProduct?.name,
+    price: currentSimpleProduct?.price,
+    qty: currentQty
+  };
+
+  // TODO: вставь реальные TOKEN и CHAT_ID, либо свой бэкенд
+  // const TOKEN = 'xxxxx:yyyyy';
+  // const CHAT  = '123456789';
+  // await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+  //   method: 'POST',
+  //   headers: {'Content-Type':'application/json'},
+  //   body: JSON.stringify({
+  //     chat_id: CHAT,
+  //     text: 🧴 Заказ: ${payload.name}\nКоличество: ${payload.qty}\nЦена: ${payload.price} ₽
+  //   })
+  // });
+
+  console.log('В корзину (простая позиция):', payload);
+  closeQtyModal();
+});
+
+// Делегирование клика по кнопке "Заказать" на карточке (НЕ "Краска")
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.order-btn');
+  if (!btn) return;
+  const product = {
+    name: btn.getAttribute('data-name'),
+    price: btn.getAttribute('data-price')
+  };
+  openQtyModal(product);
+});
+
+
+
+
+
+  
 </script>
 </body>
 </html>
