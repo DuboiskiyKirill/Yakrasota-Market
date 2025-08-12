@@ -196,28 +196,7 @@ function renderProducts(list) {
 
     const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
 
-    card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
-      <div class="product-price">${p.price} ₽</div>
-      <div class="product-name">${p.name}</div>
-
-      ${hasShades ? `
-        <button class="select-shades-btn"
-                data-name="${p.name}"
-                data-shades="${encodedShades}">
-          Выбрать оттенки
-        </button>
-       : 
-        <button class="order-btn"
-                data-name="${p.name}"
-                data-price="${p.price}">
-          Заказать
-        </button>
-      `}
-    `;
-    productGrid.appendChild(card);
-  });
-}
+    
 
   // --- search
   searchInput.addEventListener("input", () => {
@@ -238,7 +217,27 @@ function renderProducts(list) {
         <div class="qty">
           <button type="button" class="qty-minus" disabled>−</button>
           <span class="count">1</span>
-          <button type="button" class="qty-plus" disabled>+</button>
+card.innerHTML = `
+  <img src="${p.image}" alt="${p.name}">
+  <div class="product-price">${p.price} ₽</div>
+  <div class="product-name">${p.name}</div>
+  ${
+    hasShades
+      ? `<button type="button"
+                 class="select-shades-btn"
+                 data-name="${p.name}"
+                 data-shades="${encodedShades}">
+           Выбрать оттенки
+         </button>`
+      : `<button type="button"
+                 class="order-btn"
+                 data-name="${p.name}"
+                 data-price="${p.price}">
+           Заказать
+         </button>`
+  }
+`;
+<button type="button" class="qty-plus" disabled>+</button>
         </div>
       </div>
     `).join("");
