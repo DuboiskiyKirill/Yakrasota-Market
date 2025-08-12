@@ -270,54 +270,53 @@
   });
 
   // --- ORDER from shade modal
-  btnOrder.addEventListener("click", ()=>{
-    if (!currentProduct) return;
+  // --- ORDER from shade modal
+btnOrder.addEventListener("click", () => {
+  if (!currentProduct) return;
 
-    const selected = Array.from(shadePicker.querySelectorAll(".shade-row"))
-      .map(row=>{
-        const cb = row.querySelector(".shade-check");
-        if(!cb.checked) return null;
-        const qty = parseInt(row.querySelector(".count").textContent,10) || 1;
-        return { shade: cb.value, qty };
-      })
-      .filter(Boolean);
-  });
-      const qtyClose   = document.getElementById('qtyClose');
+  // собрать отмеченные оттенки
+  const selected = Array
+    .from(shadePicker.querySelectorAll(".shade-row"))
+    .map(row => {
+      const cb  = row.querySelector(".shade-check");
+      if (!cb.checked) return null;
+      const qty = parseInt(row.querySelector(".count").textContent, 10) || 1;
+      return { shade: cb.value, qty };
+    })
+    .filter(Boolean);
 
-  let allProducts = [];
-  let currentProduct = null;          // товар с оттенками
-  let currentSimpleProduct = null;    // простой товар {name, price}
-  let currentQty = 1;
+  if (!selected.length) {
+    alert("Выберите хотя бы один оттенок");
+    return; // <-- теперь внутри функции
+  }
 
-  // --- load data
-  if (!selectedBrand || !selectedCategory) {
-    productGrid.innerHTML = "<p style='color:white;'>❌Бренд или категория не выбраны!</p>";
-  } else {
-    const jsonFile = `data/${selectedBrand.toLowerCase()}.filter(Boolean)`;
+  const payload = {
+    action: "add_to_cart",
+    brand: selectedBrand,
+    category: selectedCategory,
+    product: currentProduct.name,
+    price: currentProduct.price,
+    items: selected
+  };
 
-    if(!selected.length){ alert("Выберите хотя бы один оттенок"); return; }
-
-    const payload = {
-      action: "add_to_cart",
-      brand: selectedBrand,
-      category: selectedCategory,
-      product: currentProduct.name,
-      price: currentProduct.price,
-      items: selected
-    };
-
-    if (window.Telegram && window.Telegram.WebApp){
-      try{
-        Telegram.WebApp.sendData(JSON.stringify(payload));
-        Telegram.WebApp.HapticFeedback?.notificationOccurred?.("success");
-      }catch(err){ console.log("sendData error", err); }
-    }else{
-      alert("Добавлено в корзину:\n" + JSON.stringify(payload, null, 2));
-      console.log("Payload → bot:", payload);
+  if (window.Telegram && window.Telegram.WebApp) {
+    try {
+      Telegram.WebApp.sendData(JSON.stringify(payload));
+      Telegram.WebApp.HapticFeedback?.notificationOccurred?.("success");
+    } catch (err) {
+      console.log("sendData error", err);
     }
-    closeModal();
-  });
+  } else {
+    alert("Добавлено в корзину:\n" + JSON.stringify(payload, null, 2));
+    console.log("Payload → bot:", payload);
+  }
 
+  closeModal();
+}); // <--- не забыть эту скобку и точку с запятой!
+
+
+
+  
   // ======= Qty modal for simple products =======
   function openQtyModal(product) {
     currentSimpleProduct = product;
