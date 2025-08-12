@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -5,17 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Товары</title>
   <style>
-    :root{
-      --pink:#ff4d88;
-      --pink-2:#ff79a8;
-      --card-r:14px;
-    }
+    :root{ --pink:#ff4d88; --pink-2:#ff79a8; --card-r:14px; }
     body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(180deg,#ff80b2,#ff9ac9);
-      color:#fff;
-      text-align:center;
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#ff80b2,#ff9ac9); color:#fff; text-align:center;
     }
     h1{ margin:20px 0 10px; font-size:26px; }
 
@@ -44,9 +38,12 @@
     .product-name{ margin:0 10px 12px; text-align:center; }
 
     .select-shades-btn{
-      margin:0 0 14px;
-      border:0; border-radius:999px;
+      margin:0 0 14px; border:0; border-radius:999px;
       padding:10px 14px; background:#eef0f4; color:#333; cursor:pointer;
+    }
+    .order-btn{
+      margin:0 0 14px; border:0; border-radius:999px;
+      padding:10px 14px; background:var(--pink); color:#fff; cursor:pointer;
     }
 
     /* ---------- Modal (iOS-style) ---------- */
@@ -98,6 +95,11 @@
     .btn-light{ background:#f2f3f7; color:#333; }
     .btn-primary{ background:var(--pink); color:#fff; }
 
+    /* Количество для простых товаров */
+    .qty-wrapper { display:flex; align-items:center; gap:10px; }
+    .qty-btn { background:var(--pink); color:#fff; border:0; width:34px; height:34px; border-radius:50%; font-size:18px; cursor:pointer; }
+    .qty-count { min-width:26px; text-align:center; font-weight:700; }
+
     @media (max-width:1024px){ #productGrid{ grid-template-columns:repeat(3,1fr);} }
     @media (max-width:768px){  #productGrid{ grid-template-columns:repeat(2,1fr);} }
     @media (max-width:480px){  #productGrid{ grid-template-columns:repeat(2,1fr);} }
@@ -112,24 +114,29 @@
   </div>
 
   <div id="productGrid">Загрузка...</div>
-<!-- Модал выбора количества для НЕ "Краска" -->
-<div id="qtyModal" class="modal" style="display:none">
-  <div class="modal-content">
-    <h3>Выберите количество</h3>
-    <div class="qty-wrapper" style="justify-content:center;margin:12px 0;">
-      <button type="button" class="qty-btn" id="qtyMinus">−</button>
-      <span class="qty-count" id="qtyCount">1</span>
-      <button type="button" class="qty-btn" id="qtyPlus">+</button>
-    </div>
 
-    <div class="modal-buttons" style="display:flex;gap:8px;justify-content:center;">
-      <button type="button" class="cancel-btn" id="qtyCancel">Назад</button>
-      <button type="button" class="confirm-btn" id="qtyAdd">Заказать</button>
+  <!-- Модал выбора количества для НЕ "Краска" -->
+  <div id="qtyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>🧴</span><span>Выберите количество</span>
+        <button type="button" class="modal-close" id="qtyClose">×</button>
+      </div>
+      <div style="display:flex;justify-content:center;padding:14px;">
+        <div class="qty-wrapper">
+          <button type="button" class="qty-btn" id="qtyMinus">−</button>
+          <span class="qty-count" id="qtyCount">1</span>
+          <button type="button" class="qty-btn" id="qtyPlus">+</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" id="qtyCancel">Назад</button>
+        <button type="button" class="btn btn-primary" id="qtyAdd">Заказать</button>
+      </div>
     </div>
   </div>
-</div>  
 
-  <!-- Модальное окно -->
+  <!-- Модальное окно оттенков -->
   <div id="shadeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shadeTitle">
     <div class="modal-content">
       <div class="modal-header">
@@ -137,9 +144,7 @@
         <span id="shadeTitle">Выберите оттенок</span>
         <button type="button" id="modalClose" class="modal-close" aria-label="Закрыть">×</button>
       </div>
-
-      <div id="shadePicker" class="picker"><!-- rows inject here --></div>
-
+      <div id="shadePicker" class="picker"></div>
       <div class="modal-footer">
         <button type="button" id="btnBack" class="btn btn-light">Назад</button>
         <button type="button" id="btnOrder" class="btn btn-primary">Заказать</button>
@@ -150,53 +155,72 @@
 <script>
   // --- URL params + elements
   const params = new URLSearchParams(window.location.search);
-  const selectedBrand = params.get("brand");
+  const selectedBrand    = params.get("brand");
   const selectedCategory = params.get("category");
 
   const productGrid = document.getElementById("productGrid");
   const searchInput = document.getElementById("searchInput");
 
+  // shade modal
   const shadeModal  = document.getElementById("shadeModal");
   const shadePicker = document.getElementById("shadePicker");
   const modalClose  = document.getElementById("modalClose");
   const btnBack     = document.getElementById("btnBack");
   const btnOrder    = document.getElementById("btnOrder");
 
-  let allProducts = [];
-  let currentProduct = null; // товар, для которого открыта модалка
-
-  // --- load data
-  if (!selectedBrand || !selectedCategory) {
-    productGrid.innerHTML = "<p style='color:white;'>❌ Бренд или категория не выбраны!</p>";
-  } else {
-    const jsonFile = `data/${selectedBrand.toLowerCase()}.json`;
+  // qty modal
+  const qtyModal   = document.getElementById('qtyModal');
+  const qtyMinus   = document.getElementById('qtyMinus');
+  const qtyPlus    = document.getElementById('qtyPlus');
+  const qtyCountEl = document.getElementById('qtyCount');
+  const qtyCancel  = document.getElementById('qtyCancel');
+  const qtyAdd     = document.getElementById('qtyAdd');json;
     fetch(jsonFile)
       .then(res => res.json())
       .then(data => {
         allProducts = data.filter(p => (p.category||"").trim().toLowerCase() === selectedCategory.trim().toLowerCase());
-        if (!allProducts.length) {
-          productGrid.innerHTML = "<p style='color:white;'>❌ Нет товаров</p>";
-        } else {
-          renderProducts(allProducts);
-        }
+        if (!allProducts.length) productGrid.innerHTML = "<p style='color:white;'>❌Нет товаров</p>";
+        else renderProducts(allProducts);
       })
-      .catch(() => {
-        productGrid.innerHTML = "<p style='color:white;'>Ошибка загрузки товаров</p>";
-      });
+      .catch(() => { productGrid.innerHTML = "<p style='color:white;'>Ошибка загрузки товаров</p>"; });
   }
 
-  // --- render cards (только кнопка «Выбрать оттенки»)
-function renderProducts(list) {
-  productGrid.innerHTML = "";
-  list.forEach(p => {
-    const isColor = (p.category || "").trim().toLowerCase() === "краска";
-    const hasShades = isColor && Array.isArray(p.shades) && p.shades.length > 0;
-    const card = document.createElement("div");
-    card.classList.add("product-card");
+  // --- render cards
+  function renderProducts(list){
+    productGrid.innerHTML = "";
+    list.forEach(p => {
+      const isColor   = (p.category || "").trim().toLowerCase() === "краска";
+      const hasShades = isColor && Array.isArray(p.shades) && p.shades.length > 0;
 
-    const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
+      const card = document.createElement("div");
+      card.classList.add("product-card");
 
-    
+      const encodedShades = hasShades ? encodeURIComponent(JSON.stringify(p.shades)) : "";
+
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <div class="product-price">${p.price} ₽</div>
+        <div class="product-name">${p.name}</div>
+        ${
+          hasShades
+            ? `<button type="button" class="select-shades-btn"
+                       data-name="${p.name}"
+                       data-shades="${encodedShades}">Выбрать оттенки</button>`
+            : `<button type="button" class="order-btn"
+                       data-name="${p.name}"
+                       data-price="${p.price}">Заказать</button>`
+        }
+      `;
+      productGrid.appendChild(card);
+
+      // навешиваем обработчик на кнопку выбора оттенков
+      if (hasShades) {
+        card.querySelector(".select-shades-btn")
+            .addEventListener("click", () => openModalFor(p));
+      }
+      // кнопка "Заказать" для НЕ «Краска» обрабатывается делегированием ниже
+    });
+  }
 
   // --- search
   searchInput.addEventListener("input", () => {
@@ -204,65 +228,39 @@ function renderProducts(list) {
     renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(q)));
   });
 
-  // --- open modal for product
+  // --- open shade modal
   function openModalFor(product){
     currentProduct = product;
-    // наполняем строки оттенков
     shadePicker.innerHTML = product.shades.map((s, i)=>`
       <div class="shade-row" data-index="${i}">
         <label>
-        <input class="shade-check" type="checkbox" value="${s}">
+          <input class="shade-check" type="checkbox" value="${s}">
           <span>${s}</span>
         </label>
         <div class="qty">
           <button type="button" class="qty-minus" disabled>−</button>
           <span class="count">1</span>
           <button type="button" class="qty-plus" disabled>+</button>
-          </div>
-        </div>
-        `).join("");
-card.innerHTML = `
-  <img src="${p.image}" alt="${p.name}">
-  <div class="product-price">${p.price} ₽</div>
-  <div class="product-name">${p.name}</div>
-  ${
-    hasShades
-      ? `<button type="button"
-                 class="select-shades-btn"
-                 data-name="${p.name}"
-                 data-shades="${encodedShades}">
-           Выбрать оттенки
-         </button>`
-      : `<button type="button"
-                 class="order-btn"
-                 data-name="${p.name}"
-                 data-price="${p.price}">
-           Заказать
-         </button>`
-  }
-`;
-<button type="button" class="qty-plus" disabled>+</button>
         </div>
       </div>
     `).join("");
     shadeModal.classList.add("open");
   }
 
-  // закрытия
+  // --- close shade modal
   function closeModal(){ shadeModal.classList.remove("open"); }
   modalClose.addEventListener("click", closeModal);
   btnBack.addEventListener("click", closeModal);
   shadeModal.addEventListener("click", (e)=>{ if(e.target===shadeModal) closeModal(); });
 
-  // включаем/выключаем кнопки +/- при чекбоксе
+  // включаем/выключаем +/− при чекбоксе
   shadePicker.addEventListener("change", (e)=>{
     if(!e.target.classList.contains("shade-check")) return;
     const row = e.target.closest(".shade-row");
     row.querySelector(".qty-minus").disabled = !e.target.checked;
     row.querySelector(".qty-plus").disabled  = !e.target.checked;
   });
-
-  // обработка +/-
+  // обработка +/−
   shadePicker.addEventListener("click", (e)=>{
     const row = e.target.closest(".shade-row"); if(!row) return;
     const countEl = row.querySelector(".count");
@@ -272,7 +270,7 @@ card.innerHTML = `
     countEl.textContent = num;
   });
 
-  // --- КНОПКА «ЗАКАЗАТЬ» — отправка в бота или alert
+  // --- ORDER from shade modal
   btnOrder.addEventListener("click", ()=>{
     if (!currentProduct) return;
 
@@ -283,12 +281,21 @@ card.innerHTML = `
         const qty = parseInt(row.querySelector(".count").textContent,10) || 1;
         return { shade: cb.value, qty };
       })
-      .filter(Boolean);
+      .
+      const qtyClose   = document.getElementById('qtyClose');
 
-    if(!selected.length){
-      alert("Выберите хотя бы один оттенок");
-      return;
-    }
+  let allProducts = [];
+  let currentProduct = null;          // товар с оттенками
+  let currentSimpleProduct = null;    // простой товар {name, price}
+  let currentQty = 1;
+
+  // --- load data
+  if (!selectedBrand || !selectedCategory) {
+    productGrid.innerHTML = "<p style='color:white;'>❌Бренд или категория не выбраны!</p>";
+  } else {
+    const jsonFile = data/${selectedBrand.toLowerCase()}.filter(Boolean);
+
+    if(!selected.length){ alert("Выберите хотя бы один оттенок"); return; }
 
     const payload = {
       action: "add_to_cart",
@@ -303,89 +310,59 @@ card.innerHTML = `
       try{
         Telegram.WebApp.sendData(JSON.stringify(payload));
         Telegram.WebApp.HapticFeedback?.notificationOccurred?.("success");
-      }catch(err){
-        console.log("sendData error", err);
-      }
+      }catch(err){ console.log("sendData error", err); }
     }else{
-      // фолбэк для тестов в браузере
       alert("Добавлено в корзину:\n" + JSON.stringify(payload, null, 2));
       console.log("Payload → bot:", payload);
     }
     closeModal();
   });
 
-// ======= Модал выбора количества для НЕ "Краска"
-const qtyModal   = document.getElementById('qtyModal');
-const qtyMinus   = document.getElementById('qtyMinus');
-const qtyPlus    = document.getElementById('qtyPlus');
-const qtyCountEl = document.getElementById('qtyCount');
-const qtyCancel  = document.getElementById('qtyCancel');
-const qtyAdd     = document.getElementById('qtyAdd');
+  // ======= Qty modal for simple products =======
+  function openQtyModal(product) {
+    currentSimpleProduct = product;
+    currentQty = 1;
+    qtyCountEl.textContent = '1';
+    qtyModal.classList.add('open');
+  }
+  function closeQtyModal() { qtyModal.classList.remove('open'); }
+  qtyMinus.addEventListener('click', () => { currentQty = Math.max(1, currentQty - 1); qtyCountEl.textContent = String(currentQty); });
+  qtyPlus .addEventListener('click', () => { currentQty += 1;            qtyCountEl.textContent = String(currentQty); });
+  qtyCancel.addEventListener('click', closeQtyModal);
+  qtyClose .addEventListener('click', closeQtyModal);
+  qtyModal.addEventListener('click', (e)=>{ if(e.target===qtyModal) closeQtyModal(); });
 
-let currentSimpleProduct = null; // {name, price}
-let currentQty = 1;
+  // Отправка заказа (заглушка — замени на свой токен/чат или WebApp)
+  qtyAdd.addEventListener('click', async () => {
+    const payload = {
+      type: 'simple',
+      brand: selectedBrand,
+      category: selectedCategory,
+      name: currentSimpleProduct?.name,
+      price: currentSimpleProduct?.price,
+      qty: currentQty
+    };
+    if (window.Telegram && window.Telegram.WebApp){
+      try{ Telegram.WebApp.sendData(JSON.stringify(payload)); }
+      catch(e){ console.log(e); }
+    } else {
+      alert("В корзину:\n" + JSON.stringify(payload, null, 2));
+      console.log('В корзину (простая позиция):', payload);
+    }
+    closeQtyModal();
+  });
 
-function openQtyModal(product) {
-  currentSimpleProduct = product;
-  currentQty = 1;
-  qtyCountEl.textContent = '1';
-  qtyModal.style.display = 'block';
-}
-function closeQtyModal() {
-  qtyModal.style.display = 'none';
-}
-
-qtyMinus.addEventListener('click', () => {
-  currentQty = Math.max(1, currentQty - 1);
-  qtyCountEl.textContent = String(currentQty);
-});
-qtyPlus.addEventListener('click', () => {
-  currentQty += 1;
-  qtyCountEl.textContent = String(currentQty);
-});
-qtyCancel.addEventListener('click', closeQtyModal);
-
-// Отправка заказа в бота (заглушка — замени на свой токен/чат)
-qtyAdd.addEventListener('click', async () => {
-  const payload = {
-    type: 'simple',
-    name: currentSimpleProduct?.name,
-    price: currentSimpleProduct?.price,
-    qty: currentQty
-  };
-
-  // TODO: вставь реальные TOKEN и CHAT_ID, либо свой бэкенд
-  // const TOKEN = 'xxxxx:yyyyy';
-  // const CHAT  = '123456789';
-  // await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-  //   method: 'POST',
-  //   headers: {'Content-Type':'application/json'},
-  //   body: JSON.stringify({
-  //     chat_id: CHAT,
-  //     text: 🧴 Заказ: ${payload.name}\nКоличество: ${payload.qty}\nЦена: ${payload.price} ₽
-  //   })
-  // });
-
-  console.log('В корзину (простая позиция):', payload);
-  closeQtyModal();
-});
-
-// Делегирование клика по кнопке "Заказать" на карточке (НЕ "Краска")
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.order-btn');
-  if (!btn) return;
-  const product = {
-    name: btn.getAttribute('data-name'),
-    price: btn.getAttribute('data-price')
-  };
-  openQtyModal(product);
-});
-
-
-
-
-
-  
+  // Делегирование клика по кнопке "Заказать" на карточке (НЕ "Краска")
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.order-btn');
+    if (!btn) return;
+    openQtyModal({
+      name:  btn.getAttribute('data-name'),
+      price: btn.getAttribute('data-price')
+    });
+  });
 </script>
 </body>
 </html>
+    
+  
