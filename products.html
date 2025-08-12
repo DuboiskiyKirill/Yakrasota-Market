@@ -180,7 +180,7 @@
         <img src="${p.image}" alt="${p.name}">
         <div class="product-price">${p.price} ₽</div>
         <div class="product-name">${p.name}</div>
-        ${hasShades ? <button type="button" class="select-shades-btn">Выбрать оттенки</button> : ``}
+        ${hasShades ? `<button type="button" class="select-shades-btn">Выбрать оттенки</button>` : ``}
       `;
       if (hasShades){
         card.querySelector(".select-shades-btn").addEventListener("click", () => openModalFor(p));
